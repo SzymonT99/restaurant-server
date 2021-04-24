@@ -1,0 +1,84 @@
+package com.restaurant.springboot.domain.entity;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
+@Entity
+@Table(name = "menu")
+public class Menu {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "menu_id")
+    private Long menuId;
+
+    @NotNull
+    @Column(name = "item_name")
+    private String itemName;
+
+    @NotNull
+    private Float price;
+
+    @NotNull
+    @Column(name = "menu_item_image")
+    private String menuItemImage;
+
+    @Column(name = "special_offer")
+    private boolean specialOffer;
+
+    @OneToOne(mappedBy = "menu", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Details details;
+
+    public Menu() {
+    }
+
+    public Menu(@NotNull String itemName, @NotNull Float price, @NotNull String menuItemImage, boolean specialOffer) {
+        this.itemName = itemName;
+        this.price = price;
+        this.menuItemImage = menuItemImage;
+        this.specialOffer = specialOffer;
+    }
+
+    public String getItemName() {
+        return itemName;
+    }
+
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
+    }
+
+    public Float getPrice() {
+        return price;
+    }
+
+    public void setPrice(Float price) {
+        this.price = price;
+    }
+
+    public String getMenuItemImage() {
+        return menuItemImage;
+    }
+
+    public void setMenuItemImage(String menuItemImage) {
+        this.menuItemImage = menuItemImage;
+    }
+
+    public boolean isSpecialOffer() {
+        return specialOffer;
+    }
+
+    public void setSpecialOffer(boolean specialOffer) {
+        this.specialOffer = specialOffer;
+    }
+
+    public Details getDetails() {
+        return details;
+    }
+
+    public void setDetails(Details details) {
+        this.details = details;
+    }
+}
