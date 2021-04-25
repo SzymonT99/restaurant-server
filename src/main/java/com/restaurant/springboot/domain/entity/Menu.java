@@ -1,8 +1,10 @@
 package com.restaurant.springboot.domain.entity;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Set;
 
 @Entity
 @Table(name = "menu")
@@ -21,6 +23,9 @@ public class Menu {
     private Float price;
 
     @NotNull
+    private String ingridients;
+
+    @NotNull
     @Column(name = "menu_item_image")
     private String menuItemImage;
 
@@ -29,17 +34,50 @@ public class Menu {
 
     @OneToOne(mappedBy = "menu", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonIgnore
     private Details details;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    @JsonBackReference
+    private Category category;
+
+    @Transient
+    private Long categoryId;
+
+    @ManyToMany(mappedBy = "likedMenu")
+    @JsonIgnore
+    Set<User> users;
+
+    @ManyToMany(mappedBy = "menuItems")
+    @JsonIgnore
+    Set<Order> orders;
 
     public Menu() {
     }
 
-    public Menu(@NotNull String itemName, @NotNull Float price, @NotNull String menuItemImage, boolean specialOffer) {
+    public Menu(@NotNull String itemName, @NotNull Float price, @NotNull String ingridients, @NotNull String menuItemImage, boolean specialOffer) {
         this.itemName = itemName;
         this.price = price;
+        this.ingridients = ingridients;
         this.menuItemImage = menuItemImage;
         this.specialOffer = specialOffer;
+    }
+
+    public Long getMenuId() {
+        return menuId;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public Long getCategoryId() {
+        return getCategory().getCategoryId();
+    }
+
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
     }
 
     public String getItemName() {
@@ -80,5 +118,34 @@ public class Menu {
 
     public void setDetails(Details details) {
         this.details = details;
+    }
+
+    public String getIngridients() {
+        return ingridients;
+    }
+
+    public void setIngridients(String ingridients) {
+        this.ingridients = ingridients;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
+    }
+
+    public Set<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(Set<Order> orders) {
+        this.orders = orders;
     }
 }

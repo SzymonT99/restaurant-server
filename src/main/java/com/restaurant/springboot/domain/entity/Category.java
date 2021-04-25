@@ -1,5 +1,7 @@
 package com.restaurant.springboot.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -20,12 +22,21 @@ public class Category {
     @Column(name = "category_image")
     private String categoryImage;
 
+    @OneToOne(mappedBy = "category", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Menu menu;
+
     public Category() {
     }
 
     public Category(@NotNull String categoryName, @NotNull String categoryImage) {
         this.categoryName = categoryName;
         this.categoryImage = categoryImage;
+    }
+
+    public Long getCategoryId() {
+        return categoryId;
     }
 
     public String getCategoryName() {

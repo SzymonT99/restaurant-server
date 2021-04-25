@@ -1,5 +1,6 @@
 package com.restaurant.springboot.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -22,8 +23,16 @@ public class Review {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "details_id")
-    @JsonIgnore
+    @JsonBackReference
     private Details details;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @JsonBackReference
+    private User reviewer;
+
+    @Transient
+    private String userName;
 
     public Review() {
     }
@@ -33,6 +42,17 @@ public class Review {
         this.rate = rate;
     }
 
+    public User getReviewer() {
+        return reviewer;
+    }
+
+    public void setReviewer(User reviewer) {
+        this.reviewer = reviewer;
+    }
+
+    public String getUserName() {
+        return getReviewer().getLogin();
+    }
 
     public String getComment() {
         return comment;
@@ -48,5 +68,17 @@ public class Review {
 
     public void setRate(Integer rate) {
         this.rate = rate;
+    }
+
+    public Details getDetails() {
+        return details;
+    }
+
+    public void setDetails(Details details) {
+        this.details = details;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

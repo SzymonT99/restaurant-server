@@ -1,11 +1,12 @@
 package com.restaurant.springboot.domain.entity;
 
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.Set;
 
 @Entity
 @Table(name = "orders")
@@ -14,7 +15,7 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id")
-    private Integer tableId;
+    private Integer orderId;
 
     @NotNull
     @Column(name = "total_price")
@@ -38,6 +39,18 @@ public class Order {
     @NotNull
     private boolean status;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @JsonBackReference
+    private User purchaser;
+
+    @ManyToMany
+    @JoinTable(
+            name = "menu_orders",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "menu_id"))
+    Set<Menu> menuItems;
+
     public Order() {
     }
 
@@ -49,6 +62,10 @@ public class Order {
         this.postalCode = postalCode;
         this.date = date;
         this.status = status;
+    }
+
+    public Integer getOrderId() {
+        return orderId;
     }
 
     public Float getTotalPrice() {
@@ -97,5 +114,21 @@ public class Order {
 
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    public User getPurchaser() {
+        return purchaser;
+    }
+
+    public void setPurchaser(User purchaser) {
+        this.purchaser = purchaser;
+    }
+
+    public Set<Menu> getMenuItems() {
+        return menuItems;
+    }
+
+    public void setMenuItems(Set<Menu> menuItems) {
+        this.menuItems = menuItems;
     }
 }

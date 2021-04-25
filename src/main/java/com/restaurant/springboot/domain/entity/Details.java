@@ -1,7 +1,7 @@
 package com.restaurant.springboot.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -12,7 +12,6 @@ import java.util.Set;
 public class Details {
 
     @Id
-    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "details_id")
     private Long detailsId;
@@ -39,18 +38,21 @@ public class Details {
 
     @OneToMany(mappedBy = "details", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Set<Review> reviews;
 
     public Details() {
     }
 
-    public Details(@NotNull String description, @NotNull String detailedImage,
-                   @NotNull Integer ordersNumber, @NotNull Integer averageRate, Menu menu) {
+    public Details(@NotNull String description, @NotNull String detailedImage, @NotNull Integer ordersNumber, @NotNull Integer averageRate) {
         this.description = description;
         this.detailedImage = detailedImage;
         this.ordersNumber = ordersNumber;
         this.averageRate = averageRate;
-        this.menu = menu;
+    }
+
+    public Long getDetailsId() {
+        return detailsId;
     }
 
     public String getDescription() {
