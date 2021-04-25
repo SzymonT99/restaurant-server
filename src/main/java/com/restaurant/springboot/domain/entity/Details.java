@@ -27,10 +27,6 @@ public class Details {
     @Column(name = "orders_number")
     private Integer ordersNumber;
 
-    @NotNull
-    @Column(name = "average_rate")
-    private Integer averageRate;
-
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id")
     @JsonBackReference
@@ -44,11 +40,10 @@ public class Details {
     public Details() {
     }
 
-    public Details(@NotNull String description, @NotNull String detailedImage, @NotNull Integer ordersNumber, @NotNull Integer averageRate) {
+    public Details(@NotNull String description, @NotNull String detailedImage, @NotNull Integer ordersNumber) {
         this.description = description;
         this.detailedImage = detailedImage;
         this.ordersNumber = ordersNumber;
-        this.averageRate = averageRate;
     }
 
     public Long getDetailsId() {
@@ -77,14 +72,6 @@ public class Details {
 
     public void setOrdersNumber(Integer ordersNumber) {
         this.ordersNumber = ordersNumber;
-    }
-
-    public Integer getAverageRate() {
-        return averageRate;
-    }
-
-    public void setAverageRate(Integer averageRate) {
-        this.averageRate = averageRate;
     }
 
     public Menu getMenu() {

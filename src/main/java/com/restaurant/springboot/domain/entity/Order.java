@@ -1,6 +1,7 @@
 package com.restaurant.springboot.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.restaurant.springboot.domain.model.Status;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -36,8 +37,8 @@ public class Order {
     @NotNull
     private Date date;
 
-    @NotNull
-    private boolean status;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -54,8 +55,8 @@ public class Order {
     public Order() {
     }
 
-    public Order(@NotNull Float totalPrice, @NotNull String deliveryPlace,
-                 @NotNull String street, @NotNull String postalCode, @NotNull Date date, @NotNull boolean status) {
+    public Order(@NotNull Float totalPrice, @NotNull String deliveryPlace, @NotNull String street,
+                 @NotNull String postalCode, @NotNull Date date, Status status) {
         this.totalPrice = totalPrice;
         this.deliveryPlace = deliveryPlace;
         this.street = street;
@@ -108,11 +109,11 @@ public class Order {
         this.date = date;
     }
 
-    public boolean isStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(boolean status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 

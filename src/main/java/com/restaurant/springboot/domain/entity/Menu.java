@@ -26,6 +26,10 @@ public class Menu {
     private String ingridients;
 
     @NotNull
+    @Column(name = "average_rate")
+    private Integer averageRate;
+
+    @NotNull
     @Column(name = "menu_item_image")
     private String menuItemImage;
 
@@ -56,10 +60,12 @@ public class Menu {
     public Menu() {
     }
 
-    public Menu(@NotNull String itemName, @NotNull Float price, @NotNull String ingridients, @NotNull String menuItemImage, boolean specialOffer) {
+    public Menu(@NotNull String itemName, @NotNull Float price, @NotNull String ingridients,
+                @NotNull Integer averageRate, @NotNull String menuItemImage, boolean specialOffer) {
         this.itemName = itemName;
         this.price = price;
         this.ingridients = ingridients;
+        this.averageRate = averageRate;
         this.menuItemImage = menuItemImage;
         this.specialOffer = specialOffer;
     }
@@ -132,7 +138,6 @@ public class Menu {
         this.category = category;
     }
 
-
     public Set<User> getUsers() {
         return users;
     }
@@ -147,5 +152,13 @@ public class Menu {
 
     public void setOrders(Set<Order> orders) {
         this.orders = orders;
+    }
+
+    public Integer getAverageRate() {
+        return averageRate;
+    }
+
+    public void setAverageRate(Integer averageRate) {
+        this.averageRate = averageRate;
     }
 }
