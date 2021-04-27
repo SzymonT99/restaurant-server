@@ -25,8 +25,7 @@ public class MenuOrders {
     public MenuOrders() {
     }
 
-    public MenuOrders(Integer id, Menu menuItem, Order orderItem) {
-        this.id = id;
+    public MenuOrders(Menu menuItem, Order orderItem) {
         this.menuItem = menuItem;
         this.orderItem = orderItem;
     }

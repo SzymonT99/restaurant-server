@@ -20,7 +20,7 @@ public class OrderListMapper {
             orderItemDto.setItemName(menuItem.getItemName());
             orderItemDto.setIngridients(Arrays.asList(menuItem.getIngridients().split(", ")));
             orderItemDto.setPrice(menuItem.getPrice());
-            //orderItemDto.setQuantity(menuItem.getPrice());
+            orderItemDto.setQuantity(1);
             orderItemDto.setMenuItemImage(menuItem.getMenuItemImage());
             orderItemDto.setRate(menuItem.getAverageRate());
 

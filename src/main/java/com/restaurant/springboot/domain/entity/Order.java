@@ -8,6 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -17,24 +18,20 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id")
-    private Integer orderId;
+    private Long orderId;
 
-    @NotNull
     @Column(name = "total_price")
     private Float totalPrice;
 
-    @NotNull
     @Column(name = "delivery_place")
     private String deliveryPlace;
 
-    @NotNull
     private String street;
 
-    @NotNull
     @Column(name = "postal_code")
     private String postalCode;
 
-    @DateTimeFormat
+    @Temporal(TemporalType.TIMESTAMP)
     @NotNull
     private Date date;
 
@@ -49,7 +46,7 @@ public class Order {
     @OneToMany(mappedBy = "orderItem", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
     @JsonIgnore
-    private Set<MenuOrders> menuOrders;
+    private List<MenuOrders> menuOrders;
 
     public Order() {
     }
@@ -64,7 +61,7 @@ public class Order {
         this.status = status;
     }
 
-    public Integer getOrderId() {
+    public Long getOrderId() {
         return orderId;
     }
 
@@ -124,11 +121,11 @@ public class Order {
         this.purchaser = purchaser;
     }
 
-    public Set<MenuOrders> getMenuOrders() {
+    public List<MenuOrders> getMenuOrders() {
         return menuOrders;
     }
 
-    public void setMenuOrders(Set<MenuOrders> menuOrders) {
+    public void setMenuOrders(List<MenuOrders> menuOrders) {
         this.menuOrders = menuOrders;
     }
 

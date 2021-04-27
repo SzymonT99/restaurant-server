@@ -1,15 +1,16 @@
 package com.restaurant.springboot.domain.dto;
 
 import java.util.List;
+import java.util.Objects;
 
 public class OrderItemDto {
 
     private String itemName;
     private List<String> ingridients;
     private Float price;
-    private Integer quantity;
-    private String menuItemImage;
     private Double rate;
+    private String menuItemImage;
+    private Integer quantity;
 
     public OrderItemDto() {
     }
@@ -70,4 +71,28 @@ public class OrderItemDto {
     public void setRate(Double rate) {
         this.rate = rate;
     }
+
+    @Override
+    public String toString() {
+        return "OrderItemDto{" +
+                "itemName='" + itemName + '\'' +
+                ", ingridients=" + ingridients +
+                ", price=" + price +
+                ", rate=" + rate +
+                ", menuItemImage='" + menuItemImage + '\'' +
+                ", quantity=" + quantity +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof OrderItemDto)) return false;
+        OrderItemDto that = (OrderItemDto) o;
+        return Objects.equals(getItemName(), that.getItemName()) && Objects.equals(getIngridients(),
+                that.getIngridients()) && Objects.equals(getPrice(), that.getPrice()) && Objects.equals(getRate(),
+                that.getRate()) && Objects.equals(getMenuItemImage(), that.getMenuItemImage())
+                && Objects.equals(getQuantity(), that.getQuantity());
+    }
+
 }
