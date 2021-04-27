@@ -9,12 +9,12 @@ public class OrderItemDto {
     private Float price;
     private Integer quantity;
     private String menuItemImage;
-    private Integer rate;
+    private Double rate;
 
     public OrderItemDto() {
     }
 
-    public OrderItemDto(String itemName, List<String> ingridients, Float price, Integer quantity, String menuItemImage, Integer rate) {
+    public OrderItemDto(String itemName, List<String> ingridients, Float price, Integer quantity, String menuItemImage, Double rate) {
         this.itemName = itemName;
         this.ingridients = ingridients;
         this.price = price;
@@ -63,11 +63,11 @@ public class OrderItemDto {
         this.menuItemImage = menuItemImage;
     }
 
-    public Integer getRate() {
+    public Double getRate() {
         return rate;
     }
 
-    public void setRate(Integer rate) {
+    public void setRate(Double rate) {
         this.rate = rate;
     }
 }

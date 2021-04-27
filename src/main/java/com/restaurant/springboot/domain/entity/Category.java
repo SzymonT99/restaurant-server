@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Set;
 
 @Entity
 @Table(name = "category")
@@ -22,10 +23,10 @@ public class Category {
     @Column(name = "category_image")
     private String categoryImage;
 
-    @OneToOne(mappedBy = "category", fetch = FetchType.LAZY,
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
     @JsonIgnore
-    private Menu menu;
+    private Set<Menu> menuItemsOfCategory;
 
     public Category() {
     }
@@ -53,5 +54,13 @@ public class Category {
 
     public void setCategoryImage(String categoryImage) {
         this.categoryImage = categoryImage;
+    }
+
+    public Set<Menu> getMenuItemsOfCategory() {
+        return menuItemsOfCategory;
+    }
+
+    public void setMenuItemsOfCategory(Set<Menu> menuItemsOfCategory) {
+        this.menuItemsOfCategory = menuItemsOfCategory;
     }
 }

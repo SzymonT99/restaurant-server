@@ -1,7 +1,6 @@
 package com.restaurant.springboot.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -19,7 +18,7 @@ public class Review {
     private String comment;
 
     @NotNull
-    private Integer rate;
+    private Double rate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "details_id")
@@ -37,9 +36,15 @@ public class Review {
     public Review() {
     }
 
-    public Review(@NotNull String comment, @NotNull Integer rate) {
+    public Review(@NotNull String comment, @NotNull Double rate, Details details, User reviewer) {
         this.comment = comment;
         this.rate = rate;
+        this.details = details;
+        this.reviewer = reviewer;
+    }
+
+    public Long getReviewId() {
+        return reviewId;
     }
 
     public User getReviewer() {
@@ -62,11 +67,11 @@ public class Review {
         this.comment = comment;
     }
 
-    public Integer getRate() {
+    public Double getRate() {
         return rate;
     }
 
-    public void setRate(Integer rate) {
+    public void setRate(Double rate) {
         this.rate = rate;
     }
 

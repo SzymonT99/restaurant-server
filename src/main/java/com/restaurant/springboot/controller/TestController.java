@@ -18,7 +18,7 @@ public class TestController {
     @Autowired
     CategoryRepository categoryRepository;
     @Autowired
-    DetailRepository detailRepository;
+    DetailsRepository detailRepository;
     @Autowired
     MenuRepository menuRepository;
     @Autowired

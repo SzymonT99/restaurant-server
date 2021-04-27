@@ -1,9 +1,11 @@
 package com.restaurant.springboot.domain.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -27,7 +29,7 @@ public class Menu {
 
     @NotNull
     @Column(name = "average_rate")
-    private Integer averageRate;
+    private Double averageRate;
 
     @NotNull
     @Column(name = "menu_item_image")
@@ -41,7 +43,7 @@ public class Menu {
     @JsonIgnore
     private Details details;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     @JsonBackReference
     private Category category;
@@ -51,17 +53,18 @@ public class Menu {
 
     @ManyToMany(mappedBy = "likedMenu")
     @JsonIgnore
-    Set<User> users;
+    private List<User> users;
 
-    @ManyToMany(mappedBy = "menuItems")
+    @OneToMany(mappedBy = "menuItem", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
     @JsonIgnore
-    Set<Order> orders;
+    private Set<MenuOrders> menuOrders;
 
     public Menu() {
     }
 
     public Menu(@NotNull String itemName, @NotNull Float price, @NotNull String ingridients,
-                @NotNull Integer averageRate, @NotNull String menuItemImage, boolean specialOffer) {
+                @NotNull Double averageRate, @NotNull String menuItemImage, boolean specialOffer) {
         this.itemName = itemName;
         this.price = price;
         this.ingridients = ingridients;
@@ -138,27 +141,27 @@ public class Menu {
         this.category = category;
     }
 
-    public Set<User> getUsers() {
+    public List<User> getUsers() {
         return users;
     }
 
-    public void setUsers(Set<User> users) {
+    public void setUsers(List<User> users) {
         this.users = users;
     }
 
-    public Set<Order> getOrders() {
-        return orders;
+    public Set<MenuOrders> getMenuOrders() {
+        return menuOrders;
     }
 
-    public void setOrders(Set<Order> orders) {
-        this.orders = orders;
+    public void setMenuOrders(Set<MenuOrders> menuOrders) {
+        this.menuOrders = menuOrders;
     }
 
-    public Integer getAverageRate() {
+    public Double getAverageRate() {
         return averageRate;
     }
 
-    public void setAverageRate(Integer averageRate) {
+    public void setAverageRate(Double averageRate) {
         this.averageRate = averageRate;
     }
 }

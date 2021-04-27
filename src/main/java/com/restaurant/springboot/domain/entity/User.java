@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -52,7 +53,7 @@ public class User {
             name = "menu_like",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "menu_id"))
-    Set<Menu> likedMenu;
+    private List<Menu> likedMenu;
 
     @OneToMany(mappedBy = "purchaser", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
@@ -138,11 +139,11 @@ public class User {
         this.accountVerification = accountVerification;
     }
 
-    public Set<Menu> getLikedMenu() {
+    public List<Menu> getLikedMenu() {
         return likedMenu;
     }
 
-    public void setLikedMenu(Set<Menu> likedMenu) {
+    public void setLikedMenu(List<Menu> likedMenu) {
         this.likedMenu = likedMenu;
     }
 

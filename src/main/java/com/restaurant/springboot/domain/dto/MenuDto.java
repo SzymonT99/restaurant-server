@@ -8,7 +8,7 @@ public class MenuDto {
     private String itemName;
     private List<String> ingridients;
     private Float price;
-    private Integer rate;
+    private Double rate;
     private String menuItemImage;
     private Long detailsId;
     private String categoryName;
@@ -16,7 +16,7 @@ public class MenuDto {
     public MenuDto() {
     }
 
-    public MenuDto(String itemName, List<String> ingridients, Float price, Integer rate, String menuItemImage, Long detailsId, String categoryName) {
+    public MenuDto(String itemName, List<String> ingridients, Float price, Double rate, String menuItemImage, Long detailsId, String categoryName) {
         this.itemName = itemName;
         this.ingridients = ingridients;
         this.price = price;
@@ -82,11 +82,11 @@ public class MenuDto {
         this.categoryName = categoryName;
     }
 
-    public Integer getRate() {
+    public Double getRate() {
         return rate;
     }
 
-    public void setRate(Integer rate) {
+    public void setRate(Double rate) {
         this.rate = rate;
     }
 }

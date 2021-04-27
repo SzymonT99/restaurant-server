@@ -1,6 +1,7 @@
 package com.restaurant.springboot.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.restaurant.springboot.domain.model.Status;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -45,12 +46,10 @@ public class Order {
     @JsonBackReference
     private User purchaser;
 
-    @ManyToMany
-    @JoinTable(
-            name = "menu_orders",
-            joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "menu_id"))
-    Set<Menu> menuItems;
+    @OneToMany(mappedBy = "orderItem", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<MenuOrders> menuOrders;
 
     public Order() {
     }
@@ -125,11 +124,13 @@ public class Order {
         this.purchaser = purchaser;
     }
 
-    public Set<Menu> getMenuItems() {
-        return menuItems;
+    public Set<MenuOrders> getMenuOrders() {
+        return menuOrders;
     }
 
-    public void setMenuItems(Set<Menu> menuItems) {
-        this.menuItems = menuItems;
+    public void setMenuOrders(Set<MenuOrders> menuOrders) {
+        this.menuOrders = menuOrders;
     }
+
+
 }

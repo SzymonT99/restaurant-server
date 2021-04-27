@@ -10,7 +10,5 @@ import java.util.List;
 @Repository
 public interface MenuRepository extends JpaRepository<Menu, Long> {
 
-    List<Menu> findAllByCategoryId(Long categoryId);
-
     List<Menu> findAllBySpecialOffer(boolean special);
 }
