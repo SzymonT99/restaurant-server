@@ -1,8 +1,6 @@
 package com.restaurant.springboot.service.impl;
 
-import com.restaurant.springboot.domain.dto.CreateUserDto;
-import com.restaurant.springboot.domain.dto.DeleteUserDto;
-import com.restaurant.springboot.domain.dto.UserAuthorizationDto;
+import com.restaurant.springboot.domain.dto.*;
 import com.restaurant.springboot.domain.entity.User;
 import com.restaurant.springboot.domain.model.AuthorizationStatus;
 import com.restaurant.springboot.domain.repository.UserRepository;
@@ -113,5 +111,55 @@ public class UserServiceImpl implements UserService {
             return true;
 
         }
+    }
+
+    @Override
+    public boolean updateUserLogin(ChangedUserLoginDto changedUserLogin) {
+
+        User user = userRepository.findByLogin(changedUserLogin.getOldLogin());
+
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+
+        if (!bCryptPasswordEncoder.matches(changedUserLogin.getPassword(), user.getPassword())) {
+            return false;
+        }
+        else {
+            user.setLogin(changedUserLogin.getNewLogin());
+            userRepository.save(user);
+            return true;
+        }
+    }
+
+    @Override
+    public boolean updateUserPassword(ChangedUserPasswordDto changedUserPassword) {
+
+        User user = userRepository.findByLogin(changedUserPassword.getLogin());
+
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+
+        if (!bCryptPasswordEncoder.matches(changedUserPassword.getOldPassword(), user.getPassword())) {
+            return false;
+        } else {
+
+            user.setPassword(bCryptPasswordEncoder.encode(changedUserPassword.getNewPassword()));
+            userRepository.save(user);
+            return true;
+        }
+    }
+
+    @Override
+    public boolean updateUserPhoneNumber(ChangedPhoneNumberDto changedPhoneNumberDto) {
+
+        User user = userRepository.findByLogin(changedPhoneNumberDto.getLogin());
+
+        if (userRepository.existsByPhoneNumber(changedPhoneNumberDto.getOldPhoneNumber())) {
+            user.setPhoneNumber(changedPhoneNumberDto.getNewPhoneNumber());
+            userRepository.save(user);
+            return true;
+        }
+        else {
+            return false;
+        }
+
     }
 }

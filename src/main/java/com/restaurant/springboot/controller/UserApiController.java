@@ -1,8 +1,6 @@
 package com.restaurant.springboot.controller;
 
-import com.restaurant.springboot.domain.dto.CreateUserDto;
-import com.restaurant.springboot.domain.dto.DeleteUserDto;
-import com.restaurant.springboot.domain.dto.UserAuthorizationDto;
+import com.restaurant.springboot.domain.dto.*;
 import com.restaurant.springboot.domain.entity.User;
 import com.restaurant.springboot.domain.model.AuthorizationStatus;
 import com.restaurant.springboot.service.UserService;
@@ -61,9 +59,11 @@ public class UserApiController {
 
     }
 
-
     @DeleteMapping("/delete-user")
     public ResponseEntity<Void> deleteUser(@RequestBody DeleteUserDto deleteUserDto) {
+
+        LOGGER.info("--- delete user from data base");
+        LOGGER.info("--- login: {}", deleteUserDto.getLogin());
 
         boolean deletedStatus = userService.deleteUser(deleteUserDto);
 
@@ -75,7 +75,51 @@ public class UserApiController {
     @GetMapping("/users")
     public ResponseEntity<List<User>> getUsers() {
 
+        LOGGER.info("--- get all users");
+
         return new ResponseEntity<>(userService.getUsers(), HttpStatus.OK);
+    }
+
+    @PutMapping("/user-update/login")
+    public ResponseEntity<Void> updateLogin(@Valid @RequestBody ChangedUserLoginDto changedUserLoginDto) {
+
+        LOGGER.info("--- update user login");
+        LOGGER.info("--- old login: {}", changedUserLoginDto.getOldLogin());
+        LOGGER.info("--- new login: {}", changedUserLoginDto.getNewLogin());
+
+        boolean status = userService.updateUserLogin(changedUserLoginDto);
+
+        return status
+                ? new ResponseEntity<>(HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
+
+    @PutMapping("/user-update/password")
+    public ResponseEntity<Void> updatePassword(@Valid @RequestBody ChangedUserPasswordDto changedUserLoginDto) {
+
+        LOGGER.info("--- update user password");
+        LOGGER.info("--- login: {}", changedUserLoginDto.getLogin());
+
+        boolean status = userService.updateUserPassword(changedUserLoginDto);
+
+        return status
+                ? new ResponseEntity<>(HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
+
+    @PutMapping("/user-update/phone")
+    public ResponseEntity<Void> updatePhoneNumber(@Valid @RequestBody ChangedPhoneNumberDto changedPhoneNumberDto) {
+
+        LOGGER.info("--- update user phone number");
+        LOGGER.info("--- login: {}", changedPhoneNumberDto.getLogin());
+        LOGGER.info("--- old phone number: {}", changedPhoneNumberDto.getOldPhoneNumber());
+        LOGGER.info("--- new phone number: {}", changedPhoneNumberDto.getNewPhoneNumber());
+
+        boolean status = userService.updateUserPhoneNumber(changedPhoneNumberDto);
+
+        return status
+                ? new ResponseEntity<>(HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
 }
