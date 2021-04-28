@@ -57,12 +57,6 @@ public class TestController {
         return new ResponseEntity<>(reviewRepository.findAll(), HttpStatus.OK);
     }
 
-    @GetMapping("/users")
-    public ResponseEntity<List<User>> getUsers() {
-
-        return new ResponseEntity<>(userRepository.findAll(), HttpStatus.OK);
-    }
-
     @GetMapping("/orders")
     public ResponseEntity<List<Order>> getOrders() {
 

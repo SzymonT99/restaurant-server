@@ -9,6 +9,7 @@ import com.restaurant.springboot.domain.repository.ReviewRepository;
 import com.restaurant.springboot.domain.repository.UserRepository;
 import com.restaurant.springboot.service.DetailsService;
 import com.restaurant.springboot.service.ReviewService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,6 +20,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final DetailsRepository detailRepository;
     private final DetailsService detailsService;
 
+    @Autowired
     public ReviewServiceImpl(ReviewRepository reviewRepository, UserRepository userRepository,
                              DetailsRepository detailRepository, DetailsService detailsService) {
         this.reviewRepository = reviewRepository;

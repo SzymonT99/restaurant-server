@@ -6,6 +6,7 @@ import com.restaurant.springboot.domain.entity.Review;
 import com.restaurant.springboot.domain.repository.DetailsRepository;
 import com.restaurant.springboot.domain.repository.MenuRepository;
 import com.restaurant.springboot.service.DetailsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,6 +15,7 @@ public class DetailsServiceImpl implements DetailsService {
     private final DetailsRepository detailRepository;
     private final MenuRepository menuRepository;
 
+    @Autowired
     public DetailsServiceImpl(DetailsRepository detailRepository, MenuRepository menuRepository) {
         this.detailRepository = detailRepository;
         this.menuRepository = menuRepository;

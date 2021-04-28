@@ -11,6 +11,7 @@ import com.restaurant.springboot.domain.repository.MenuRepository;
 import com.restaurant.springboot.domain.repository.OrderRepository;
 import com.restaurant.springboot.domain.repository.UserRepository;
 import com.restaurant.springboot.service.OrderService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ public class OrderServiceImpl implements OrderService {
     private final UserRepository userRepository;
     private final MenuRepository menuRepository;
 
+    @Autowired
     public OrderServiceImpl(MenuOrdersRepository menuOrdersRepository, OrderRepository orderRepository,
                             OrderListMapper orderListMapper, UserRepository userRepository, MenuRepository menuRepository) {
         this.menuOrdersRepository = menuOrdersRepository;
