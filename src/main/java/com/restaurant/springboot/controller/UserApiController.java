@@ -41,7 +41,7 @@ public class UserApiController {
         return new ResponseEntity<>(code);
     }
 
-    @PostMapping("/user/login")
+    @GetMapping("/user/login")
     public ResponseEntity<Void> authorizeUser(@RequestBody UserAuthorizationDto userVerificationDto) {
 
         LOGGER.info("--- check login data: {}", userVerificationDto.getLogin());
