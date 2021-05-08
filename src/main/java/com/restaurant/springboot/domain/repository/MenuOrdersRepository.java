@@ -16,7 +16,11 @@ public interface MenuOrdersRepository extends JpaRepository<MenuOrders, Long> {
 
     Integer countAllByOrderItemAndMenuItem(Order order, Menu menu);
 
+    List<MenuOrders> findAllByMenuItemAndOrderItem(Menu menu, Order order);
+
     @Transactional
-    void deleteByMenuItemAndOrderItem(Menu menu, Order order);
+    void deleteByIdAndMenuItemAndOrderItem(Long id, Menu menu, Order order);
+
+    Integer countAllByOrderItem(Order order);
 
 }

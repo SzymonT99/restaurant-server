@@ -41,7 +41,7 @@ public class ReviewServiceImpl implements ReviewService {
             Review review = new Review(reviewDto.getComment(), reviewDto.getRate(), details, user);
             reviewRepository.save(review);
             detailsService.updateAverageRateOfMenuItem(reviewDto.getDetailsId());   // aktualizacja średniej ocen
-            detailsService.updateOrdersCounter(reviewDto.getDetailsId());           // aktualizacja liczby zamówień
+           // detailsService.updateOrdersCounter(reviewDto.getDetailsId());           // aktualizacja liczby zamówień
             return true;
         }
         return false;

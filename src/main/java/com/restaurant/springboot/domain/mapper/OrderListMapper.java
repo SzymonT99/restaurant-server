@@ -18,11 +18,12 @@ public class OrderListMapper {
             OrderItemDto orderItemDto = new OrderItemDto();
 
             orderItemDto.setItemName(menuItem.getItemName());
-            orderItemDto.setIngridients(Arrays.asList(menuItem.getIngridients().split(", ")));
+            orderItemDto.setIngredients(Arrays.asList(menuItem.getIngredients().split(", ")));
             orderItemDto.setPrice(menuItem.getPrice());
             orderItemDto.setQuantity(1);
             orderItemDto.setMenuItemImage(menuItem.getMenuItemImage());
             orderItemDto.setRate(menuItem.getAverageRate());
+            orderItemDto.setDetailsId(menuItem.getDetails().getDetailsId());
 
             orderedItems.add(orderItemDto);
         }

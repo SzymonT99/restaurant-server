@@ -8,10 +8,12 @@ public interface OrderService {
 
     List<OrderItemDto> getOrderItemsByOrderId(Long orderId);
 
-    void createOrder(Long userId);
+    Long createOrder(Long userId);
 
     void addOrderItem(Long orderId, Long menuId);
 
     void deleteOrderItem(Long orderId, Long menuId);
+
+    Integer countAllOrderItems (Long orderId);
 
 }

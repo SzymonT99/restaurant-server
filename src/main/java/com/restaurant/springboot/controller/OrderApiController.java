@@ -30,17 +30,24 @@ public class OrderApiController {
         return new ResponseEntity<>(orderList, HttpStatus.OK);
     }
 
-    @PostMapping("/order-create/{userId}")
-    public ResponseEntity<Void> createEmptyOrder(@PathVariable("userId") Long userId) {
+    @GetMapping("/order-create/{userId}")
+    public ResponseEntity<Long> createEmptyOrder(@PathVariable("userId") Long userId) {
 
-        orderService.createOrder(userId);
+        LOGGER.info("--- order create: ");
+        LOGGER.info("--- userId: {}", userId);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        Long orderId = orderService.createOrder(userId);
+
+        return new ResponseEntity<>(orderId, HttpStatus.OK);
     }
 
     @PostMapping("/add-order-element")
     public ResponseEntity<Void> addToOrder(@RequestParam(value = "menuId") Long menuId,
                                            @RequestParam(value = "orderId") Long orderId) {
+
+        LOGGER.info("--- add to order: ");
+        LOGGER.info("--- menuId: {}", menuId);
+        LOGGER.info("--- orderId: {}", orderId);
 
         orderService.addOrderItem(orderId, menuId);
 
@@ -51,9 +58,24 @@ public class OrderApiController {
     public ResponseEntity<Void> removeFromOrder(@RequestParam(value = "menuId") Long menuId,
                                                 @RequestParam(value = "orderId") Long orderId) {
 
+        LOGGER.info("--- remove from order: ");
+        LOGGER.info("--- menuId: {}", menuId);
+        LOGGER.info("--- orderId: {}", orderId);
+
         orderService.deleteOrderItem(orderId, menuId);
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/order/quantity/{orderId}")
+    public ResponseEntity<Integer> getOrderQuantity(@PathVariable("orderId") Long orderId) {
+
+        LOGGER.info("--- order quantity: ");
+        LOGGER.info("--- orderId: {}", orderId);
+
+        Integer orderQuantity = orderService.countAllOrderItems(orderId);
+
+        return new ResponseEntity<>(orderQuantity, HttpStatus.OK);
     }
 
 }

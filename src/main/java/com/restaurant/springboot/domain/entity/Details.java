@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "details")
@@ -35,7 +35,7 @@ public class Details {
     @OneToMany(mappedBy = "details", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
     @JsonManagedReference
-    private Set<Review> reviews;
+    private List<Review> reviews;
 
     public Details() {
     }
@@ -82,11 +82,11 @@ public class Details {
         this.menu = menu;
     }
 
-    public Set<Review> getReviews() {
+    public List<Review> getReviews() {
         return reviews;
     }
 
-    public void setReviews(Set<Review> reviews) {
+    public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
     }
 }

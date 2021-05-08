@@ -6,6 +6,7 @@ import com.restaurant.springboot.domain.entity.MenuOrders;
 import com.restaurant.springboot.domain.entity.Order;
 import com.restaurant.springboot.domain.entity.User;
 import com.restaurant.springboot.domain.mapper.OrderListMapper;
+import com.restaurant.springboot.domain.model.Status;
 import com.restaurant.springboot.domain.repository.MenuOrdersRepository;
 import com.restaurant.springboot.domain.repository.MenuRepository;
 import com.restaurant.springboot.domain.repository.OrderRepository;
@@ -62,6 +63,7 @@ public class OrderServiceImpl implements OrderService {
             if (quantity > 1) {
                 OrderItemDto orderItemDto = orderList.get(i);
                 orderItemDto.setQuantity(quantity);
+                orderItemDto.setPrice(quantity * orderItemDto.getPrice());  // sumowanie cen
                 orderList.set(i, orderItemDto);
             }
         }
@@ -78,17 +80,25 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void createOrder(Long userId) {
-        Order emptyOrder = new Order();
+    public Long createOrder(Long userId) {
+        User user = userRepository.findById(userId).orElse(null);
+        if (orderRepository.existsByPurchaserAndStatus(user, Status.SELECTION)) {
+            Order lastOrder = orderRepository.findOneByStatusAndPurchaser(Status.SELECTION, user);
+            return lastOrder.getOrderId();
+        }
+        else {
+            Order emptyOrder = new Order();
 
 //        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 //        String date = String.valueOf(new Date());
 
-        User user = userRepository.findById(userId).orElse(null);
-        emptyOrder.setPurchaser(user);
-        emptyOrder.setDate(new Date());
+            emptyOrder.setPurchaser(user);
+            emptyOrder.setDate(new Date());
+            emptyOrder.setStatus(Status.SELECTION);
 
-        orderRepository.save(emptyOrder);
+            orderRepository.save(emptyOrder);
+            return emptyOrder.getOrderId();
+        }
     }
 
     @Override
@@ -112,13 +122,20 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findById(orderId).orElse(null);
         Menu selectedMenuItem = menuRepository.findById(menuId).orElse(null);
 
-//        List<MenuOrders> menuOrdersList = order.getMenuOrders();
-//        MenuOrders menuOrders = new MenuOrders(selectedMenuItem, order);
-//        menuOrdersList.remove(menuOrders);
-//
-//        order.setMenuOrders(menuOrdersList);
+        List<MenuOrders> menuOrdersList = menuOrdersRepository.findAllByMenuItemAndOrderItem(selectedMenuItem, order);
 
-        menuOrdersRepository.deleteByMenuItemAndOrderItem(selectedMenuItem, order);
+        Long id = menuOrdersList.get(0).getId();
+
+        menuOrdersRepository.deleteByIdAndMenuItemAndOrderItem(id, selectedMenuItem, order);
+    }
+
+    @Override
+    public Integer countAllOrderItems(Long orderId) {
+
+        Order order = orderRepository.findById(orderId).orElse(null);
+        Integer numberOfOrderItems = menuOrdersRepository.countAllByOrderItem(order);
+
+        return numberOfOrderItems;
     }
 
 }

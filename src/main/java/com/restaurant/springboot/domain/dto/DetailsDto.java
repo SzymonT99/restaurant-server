@@ -1,8 +1,10 @@
 package com.restaurant.springboot.domain.dto;
 
+import com.restaurant.springboot.domain.entity.Details;
+
 import java.util.List;
 
-public class MenuDto {
+public class DetailsDto {
 
     private Long menuId;
     private String itemName;
@@ -10,20 +12,22 @@ public class MenuDto {
     private Float price;
     private Double rate;
     private String menuItemImage;
-    private Long detailsId;
     private String categoryName;
+    private Details details;
 
-    public MenuDto() {
+    public DetailsDto() {
     }
 
-    public MenuDto(String itemName, List<String> ingredients, Float price, Double rate, String menuItemImage, Long detailsId, String categoryName) {
+    public DetailsDto(Long menuId, String itemName, List<String> ingredients, Float price, Double rate,
+                      String menuItemImage, String categoryName, Details details) {
+        this.menuId = menuId;
         this.itemName = itemName;
         this.ingredients = ingredients;
         this.price = price;
         this.rate = rate;
         this.menuItemImage = menuItemImage;
-        this.detailsId = detailsId;
         this.categoryName = categoryName;
+        this.details = details;
     }
 
     public Long getMenuId() {
@@ -66,14 +70,6 @@ public class MenuDto {
         this.menuItemImage = menuItemImage;
     }
 
-    public Long getDetailsId() {
-        return detailsId;
-    }
-
-    public void setDetailsId(Long detailsId) {
-        this.detailsId = detailsId;
-    }
-
     public String getCategoryName() {
         return categoryName;
     }
@@ -89,4 +85,13 @@ public class MenuDto {
     public void setRate(Double rate) {
         this.rate = rate;
     }
+
+    public Details getDetails() {
+        return details;
+    }
+
+    public void setDetails(Details details) {
+        this.details = details;
+    }
 }
+

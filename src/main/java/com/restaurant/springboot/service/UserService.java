@@ -27,4 +27,6 @@ public interface UserService {
 
     boolean updateUserPhoneNumber(ChangedPhoneNumberDto changedPhoneNumberDto);
 
+    Long getUserIdByLogin(String login);
+
 }

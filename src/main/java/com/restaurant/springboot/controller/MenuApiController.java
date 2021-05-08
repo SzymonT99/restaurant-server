@@ -1,5 +1,6 @@
 package com.restaurant.springboot.controller;
 
+import com.restaurant.springboot.domain.dto.DetailsDto;
 import com.restaurant.springboot.domain.dto.LikedMenuDto;
 import com.restaurant.springboot.domain.dto.MenuDto;
 import com.restaurant.springboot.domain.entity.Category;
@@ -55,6 +56,7 @@ public class MenuApiController {
     @GetMapping("/menu-like/user/{userId}")
     public ResponseEntity<List<LikedMenuDto>> getUserLikedMenuId(@PathVariable("userId") Long userId) {
 
+        LOGGER.info("--- Get liked menu for userId: {}", userId);
         return new ResponseEntity<>(menuService.getUserLikedMenuId(userId), HttpStatus.OK);
     }
 
@@ -89,7 +91,7 @@ public class MenuApiController {
     }
 
     @GetMapping("/menu/details/{menuId}")
-    public ResponseEntity<Details> getDetailsMenu(@PathVariable("menuId") Long menuId) {
+    public ResponseEntity<DetailsDto> getDetailsMenu(@PathVariable("menuId") Long menuId) {
 
         return new ResponseEntity<>(detailsService.getDetailMenuItemById(menuId), HttpStatus.OK);
     }

@@ -10,7 +10,7 @@ public class MenuOrders {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id")
@@ -30,6 +30,9 @@ public class MenuOrders {
         this.orderItem = orderItem;
     }
 
+    public Long getId() {
+        return id;
+    }
 
     public Menu getMenuItem() {
         return menuItem;

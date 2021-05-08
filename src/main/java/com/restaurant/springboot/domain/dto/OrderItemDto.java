@@ -6,22 +6,24 @@ import java.util.Objects;
 public class OrderItemDto {
 
     private String itemName;
-    private List<String> ingridients;
+    private List<String> ingredients;
     private Float price;
     private Double rate;
     private String menuItemImage;
     private Integer quantity;
+    private Long detailsId;
 
     public OrderItemDto() {
     }
 
-    public OrderItemDto(String itemName, List<String> ingridients, Float price, Integer quantity, String menuItemImage, Double rate) {
+    public OrderItemDto(String itemName, List<String> ingredients, Float price, Double rate, String menuItemImage, Integer quantity, Long detailsId) {
         this.itemName = itemName;
-        this.ingridients = ingridients;
+        this.ingredients = ingredients;
         this.price = price;
-        this.quantity = quantity;
-        this.menuItemImage = menuItemImage;
         this.rate = rate;
+        this.menuItemImage = menuItemImage;
+        this.quantity = quantity;
+        this.detailsId = detailsId;
     }
 
     public String getItemName() {
@@ -32,12 +34,12 @@ public class OrderItemDto {
         this.itemName = itemName;
     }
 
-    public List<String> getIngridients() {
-        return ingridients;
+    public List<String> getIngredients() {
+        return ingredients;
     }
 
-    public void setIngridients(List<String> ingridients) {
-        this.ingridients = ingridients;
+    public void setIngredients(List<String> ingredients) {
+        this.ingredients = ingredients;
     }
 
     public Float getPrice() {
@@ -72,11 +74,19 @@ public class OrderItemDto {
         this.rate = rate;
     }
 
+    public Long getDetailsId() {
+        return detailsId;
+    }
+
+    public void setDetailsId(Long detailsId) {
+        this.detailsId = detailsId;
+    }
+
     @Override
     public String toString() {
         return "OrderItemDto{" +
                 "itemName='" + itemName + '\'' +
-                ", ingridients=" + ingridients +
+                ", ingridients=" + ingredients +
                 ", price=" + price +
                 ", rate=" + rate +
                 ", menuItemImage='" + menuItemImage + '\'' +
@@ -89,8 +99,8 @@ public class OrderItemDto {
         if (this == o) return true;
         if (!(o instanceof OrderItemDto)) return false;
         OrderItemDto that = (OrderItemDto) o;
-        return Objects.equals(getItemName(), that.getItemName()) && Objects.equals(getIngridients(),
-                that.getIngridients()) && Objects.equals(getPrice(), that.getPrice()) && Objects.equals(getRate(),
+        return Objects.equals(getItemName(), that.getItemName()) && Objects.equals(getIngredients(),
+                that.getIngredients()) && Objects.equals(getPrice(), that.getPrice()) && Objects.equals(getRate(),
                 that.getRate()) && Objects.equals(getMenuItemImage(), that.getMenuItemImage())
                 && Objects.equals(getQuantity(), that.getQuantity());
     }

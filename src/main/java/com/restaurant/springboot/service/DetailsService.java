@@ -1,10 +1,10 @@
 package com.restaurant.springboot.service;
 
-import com.restaurant.springboot.domain.entity.Details;
+import com.restaurant.springboot.domain.dto.DetailsDto;
 
 public interface DetailsService {
 
-    Details getDetailMenuItemById(Long menuId);
+    DetailsDto getDetailMenuItemById(Long menuId);
 
     void updateAverageRateOfMenuItem(Long detailsId);
 

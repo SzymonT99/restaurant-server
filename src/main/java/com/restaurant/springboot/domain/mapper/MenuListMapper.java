@@ -21,7 +21,7 @@ public class MenuListMapper {
             menuDto.setItemName(menuItem.getItemName());
             menuDto.setPrice(menuItem.getPrice());
             menuDto.setRate(menuItem.getAverageRate());
-            menuDto.setIngridients(Arrays.asList(menuItem.getIngridients().split(", ")));
+            menuDto.setIngredients(Arrays.asList(menuItem.getIngredients().split(", ")));
             menuDto.setMenuItemImage(menuItem.getMenuItemImage());
             menuDto.setDetailsId(menuItem.getDetails().getDetailsId());
             menuDto.setCategoryName(menuItem.getCategory().getCategoryName());

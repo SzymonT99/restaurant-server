@@ -25,7 +25,7 @@ public class Menu {
     private Float price;
 
     @NotNull
-    private String ingridients;
+    private String ingredients;
 
     @NotNull
     @Column(name = "average_rate")
@@ -40,7 +40,6 @@ public class Menu {
 
     @OneToOne(mappedBy = "menu", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
-    @JsonIgnore
     private Details details;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -63,11 +62,11 @@ public class Menu {
     public Menu() {
     }
 
-    public Menu(@NotNull String itemName, @NotNull Float price, @NotNull String ingridients,
+    public Menu(@NotNull String itemName, @NotNull Float price, @NotNull String ingredients,
                 @NotNull Double averageRate, @NotNull String menuItemImage, boolean specialOffer) {
         this.itemName = itemName;
         this.price = price;
-        this.ingridients = ingridients;
+        this.ingredients = ingredients;
         this.averageRate = averageRate;
         this.menuItemImage = menuItemImage;
         this.specialOffer = specialOffer;
@@ -129,12 +128,12 @@ public class Menu {
         this.details = details;
     }
 
-    public String getIngridients() {
-        return ingridients;
+    public String getIngredients() {
+        return ingredients;
     }
 
-    public void setIngridients(String ingridients) {
-        this.ingridients = ingridients;
+    public void setIngredients(String ingredients) {
+        this.ingredients = ingredients;
     }
 
     public void setCategory(Category category) {

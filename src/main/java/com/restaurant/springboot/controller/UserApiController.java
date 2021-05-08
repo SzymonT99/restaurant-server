@@ -41,22 +41,24 @@ public class UserApiController {
         return new ResponseEntity<>(code);
     }
 
-    @GetMapping("/user/login")
-    public ResponseEntity<Void> authorizeUser(@RequestBody UserAuthorizationDto userVerificationDto) {
+    @PostMapping("/user/login")
+    public ResponseEntity<?> authorizeUser(@RequestBody UserAuthorizationDto userVerificationDto) {
 
         LOGGER.info("--- check login data: {}", userVerificationDto.getLogin());
+        LOGGER.info("--- check password data: {}", userVerificationDto.getPassword());
 
         AuthorizationStatus status = userService.checkLogin(userVerificationDto);
+        LOGGER.info("--- login status: {}", status);
 
+        Long userId = userService.getUserIdByLogin(userVerificationDto.getLogin());
 
         if (status == AuthorizationStatus.ACCESS) {
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(userId, HttpStatus.OK);
         } else if (status == AuthorizationStatus.UNAUTHORIZED) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
-
     }
 
     @DeleteMapping("/delete-user")
