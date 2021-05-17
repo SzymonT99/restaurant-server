@@ -77,7 +77,7 @@ public class User {
         this.active = active;
         this.incorrectLoginCounter = incorrectLoginCounter;
         this.accountVerification = accountVerification;
-    }
+    } 
 
     public Long getUserId() {
         return userId;

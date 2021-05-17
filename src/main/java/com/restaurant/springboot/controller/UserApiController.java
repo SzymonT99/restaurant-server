@@ -89,7 +89,7 @@ public class UserApiController {
         LOGGER.info("--- old login: {}", changedUserLoginDto.getOldLogin());
         LOGGER.info("--- new login: {}", changedUserLoginDto.getNewLogin());
 
-        boolean status = userService.updateUserLogin(changedUserLoginDto);
+        boolean status = userService.updateLogin(changedUserLoginDto);
 
         return status
                 ? new ResponseEntity<>(HttpStatus.OK)
@@ -102,7 +102,7 @@ public class UserApiController {
         LOGGER.info("--- update user password");
         LOGGER.info("--- login: {}", changedUserLoginDto.getLogin());
 
-        boolean status = userService.updateUserPassword(changedUserLoginDto);
+        boolean status = userService.updatePassword(changedUserLoginDto);
 
         return status
                 ? new ResponseEntity<>(HttpStatus.OK)
@@ -117,7 +117,7 @@ public class UserApiController {
         LOGGER.info("--- old phone number: {}", changedPhoneNumberDto.getOldPhoneNumber());
         LOGGER.info("--- new phone number: {}", changedPhoneNumberDto.getNewPhoneNumber());
 
-        boolean status = userService.updateUserPhoneNumber(changedPhoneNumberDto);
+        boolean status = userService.updatePhoneNumber(changedPhoneNumberDto);
 
         return status
                 ? new ResponseEntity<>(HttpStatus.OK)

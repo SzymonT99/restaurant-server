@@ -114,7 +114,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean updateUserLogin(ChangedUserLoginDto changedUserLogin) {
+    public boolean updateLogin(ChangedUserLoginDto changedUserLogin) {
 
         User user = userRepository.findByLogin(changedUserLogin.getOldLogin());
 
@@ -131,7 +131,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean updateUserPassword(ChangedUserPasswordDto changedUserPassword) {
+    public boolean updatePassword(ChangedUserPasswordDto changedUserPassword) {
 
         User user = userRepository.findByLogin(changedUserPassword.getLogin());
 
@@ -148,7 +148,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean updateUserPhoneNumber(ChangedPhoneNumberDto changedPhoneNumberDto) {
+    public boolean updatePhoneNumber(ChangedPhoneNumberDto changedPhoneNumberDto) {
 
         User user = userRepository.findByLogin(changedPhoneNumberDto.getLogin());
 

@@ -21,11 +21,11 @@ public interface UserService {
 
     boolean deleteUser (DeleteUserDto deleteUser);
 
-    boolean updateUserLogin(ChangedUserLoginDto changedUserLogin);
+    boolean updateLogin(ChangedUserLoginDto changedUserLogin);
 
-    boolean updateUserPassword(ChangedUserPasswordDto changedUserPassword);
+    boolean updatePassword(ChangedUserPasswordDto changedUserPassword);
 
-    boolean updateUserPhoneNumber(ChangedPhoneNumberDto changedPhoneNumberDto);
+    boolean updatePhoneNumber(ChangedPhoneNumberDto changedPhoneNumberDto);
 
     Long getUserIdByLogin(String login);
 

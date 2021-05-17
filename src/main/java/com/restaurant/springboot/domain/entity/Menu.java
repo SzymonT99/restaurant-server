@@ -1,7 +1,6 @@
 package com.restaurant.springboot.domain.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -52,7 +51,7 @@ public class Menu {
 
     @ManyToMany(mappedBy = "likedMenu")
     @JsonIgnore
-    private List<User> users;
+    private List<User> likedUsers;
 
     @OneToMany(mappedBy = "menuItem", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
@@ -140,12 +139,12 @@ public class Menu {
         this.category = category;
     }
 
-    public List<User> getUsers() {
-        return users;
+    public List<User> getLikedUsers() {
+        return likedUsers;
     }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
+    public void setLikedUsers(List<User> users) {
+        this.likedUsers = users;
     }
 
     public Set<MenuOrders> getMenuOrders() {

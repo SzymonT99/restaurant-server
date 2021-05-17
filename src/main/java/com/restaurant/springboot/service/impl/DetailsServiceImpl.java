@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class DetailsServiceImpl implements DetailsService {
@@ -34,17 +36,11 @@ public class DetailsServiceImpl implements DetailsService {
         Menu menuItem = menuRepository.findById(menuId).orElse(null);
         List<Review> reviews = menuItem.getDetails().getReviews();
 
-        List<Review> sortedReviews = new ArrayList<>();
+        List<Review> sortedReviews = reviews.stream()
+                .sorted(Comparator.comparingLong(Review::getReviewId))
+                .collect(Collectors.toList());
 
-        for (int i = 0; i < reviews.size(); i++) {
-            for (int j = 0; j < reviews.size(); j++) {
-                if (reviews.get(i).getReviewId() > reviews.get(j).getReviewId()) {
-                    reviews.set(i, reviews.get(j));
-                }
-            }
-        }
-
-        menuItem.getDetails().setReviews(reviews);
+        menuItem.getDetails().setReviews(sortedReviews);
 
         return detailsMapper.mapToDto(menuItem);
     }
