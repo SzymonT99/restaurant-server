@@ -1,14 +1,17 @@
 package com.restaurant.springboot.controller;
 
+import com.restaurant.springboot.config.JwtTokenUtil;
 import com.restaurant.springboot.domain.dto.*;
 import com.restaurant.springboot.domain.entity.User;
 import com.restaurant.springboot.domain.model.AuthorizationStatus;
 import com.restaurant.springboot.service.UserService;
+import com.restaurant.springboot.service.impl.JwtUserDetailsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -20,29 +23,31 @@ public class UserApiController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserApiController.class);
 
-    private UserService userService;
+    private final UserService userService;
+    private final JwtTokenUtil jwtTokenUtil;
+    private final JwtUserDetailsService userDetailsService;
 
     @Autowired
-    public UserApiController(UserService userService) {
+    public UserApiController(UserService userService, JwtTokenUtil jwtTokenUtil, JwtUserDetailsService userDetailsService) {
         this.userService = userService;
+        this.jwtTokenUtil = jwtTokenUtil;
+        this.userDetailsService = userDetailsService;
     }
 
-
     @PostMapping("/create-user")
-    public ResponseEntity<Void> createUser(@Valid @RequestBody CreateUserDto createUserDto){
+    public ResponseEntity<Void> createUser(@Valid @RequestBody CreateUserDto createUserDto) {
 
         LOGGER.info("--- login: {}", createUserDto.getLogin());
         LOGGER.info("--- e-mail: {}", createUserDto.getEmail());
         LOGGER.info("--- phone number: {}", createUserDto.getPhoneNumber());
-        //LOGGER.info("--- password: {}", createUserDto.getPassword());
 
-        HttpStatus code =  userService.registerUser(createUserDto);
+        HttpStatus code = userService.registerUser(createUserDto);
 
         return new ResponseEntity<>(code);
     }
 
     @PostMapping("/user/login")
-    public ResponseEntity<?> authorizeUser(@RequestBody UserAuthorizationDto userVerificationDto) {
+    public ResponseEntity<?> authorizeUser(@RequestBody UserAuthorizationDto userVerificationDto) throws Exception {
 
         LOGGER.info("--- check login data: {}", userVerificationDto.getLogin());
         LOGGER.info("--- check password data: {}", userVerificationDto.getPassword());
@@ -50,10 +55,15 @@ public class UserApiController {
         AuthorizationStatus status = userService.checkLogin(userVerificationDto);
         LOGGER.info("--- login status: {}", status);
 
-        Long userId = userService.getUserIdByLogin(userVerificationDto.getLogin());
-
         if (status == AuthorizationStatus.ACCESS) {
-            return new ResponseEntity<>(userId, HttpStatus.OK);
+
+            Long userId = userService.getUserIdByLogin(userVerificationDto.getLogin());
+            final UserDetails userDetails = userDetailsService.loadUserByUsername(userVerificationDto.getLogin());
+            final String token = jwtTokenUtil.generateToken(userDetails);
+            JwtResponse jwtResponse = new JwtResponse(token, userId);
+
+            return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
+
         } else if (status == AuthorizationStatus.UNAUTHORIZED) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {
@@ -83,30 +93,45 @@ public class UserApiController {
     }
 
     @PutMapping("/user-update/login")
-    public ResponseEntity<Void> updateLogin(@Valid @RequestBody ChangedUserLoginDto changedUserLoginDto) {
+    public ResponseEntity<?> updateLogin(@Valid @RequestBody ChangedUserLoginDto changedUserLoginDto) {
 
         LOGGER.info("--- update user login");
         LOGGER.info("--- old login: {}", changedUserLoginDto.getOldLogin());
         LOGGER.info("--- new login: {}", changedUserLoginDto.getNewLogin());
 
         boolean status = userService.updateLogin(changedUserLoginDto);
+        if (status) {
 
-        return status
-                ? new ResponseEntity<>(HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            Long userId = userService.getUserIdByLogin(changedUserLoginDto.getNewLogin());
+            final UserDetails userDetails = userDetailsService.loadUserByUsername(changedUserLoginDto.getNewLogin());
+            final String token = jwtTokenUtil.generateToken(userDetails);
+            JwtResponse jwtResponse = new JwtResponse(token, userId);
+
+            return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
     }
 
     @PutMapping("/user-update/password")
-    public ResponseEntity<Void> updatePassword(@Valid @RequestBody ChangedUserPasswordDto changedUserLoginDto) {
+    public ResponseEntity<?> updatePassword(@Valid @RequestBody ChangedUserPasswordDto changedUserPasswordDto) {
 
         LOGGER.info("--- update user password");
-        LOGGER.info("--- login: {}", changedUserLoginDto.getLogin());
+        LOGGER.info("--- login: {}", changedUserPasswordDto.getLogin());
 
-        boolean status = userService.updatePassword(changedUserLoginDto);
+        boolean status = userService.updatePassword(changedUserPasswordDto);
+        if (status) {
+            Long userId = userService.getUserIdByLogin(changedUserPasswordDto.getLogin());
+            final UserDetails userDetails = userDetailsService.loadUserByUsername(changedUserPasswordDto.getLogin());
+            final String token = jwtTokenUtil.generateToken(userDetails);
+            JwtResponse jwtResponse = new JwtResponse(token, userId);
 
-        return status
-                ? new ResponseEntity<>(HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
     }
 
     @PutMapping("/user-update/phone")
@@ -114,10 +139,23 @@ public class UserApiController {
 
         LOGGER.info("--- update user phone number");
         LOGGER.info("--- login: {}", changedPhoneNumberDto.getLogin());
-        LOGGER.info("--- old phone number: {}", changedPhoneNumberDto.getOldPhoneNumber());
         LOGGER.info("--- new phone number: {}", changedPhoneNumberDto.getNewPhoneNumber());
 
         boolean status = userService.updatePhoneNumber(changedPhoneNumberDto);
+
+        return status
+                ? new ResponseEntity<>(HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
+
+    @PutMapping("/user-update/email")
+    public ResponseEntity<Void> updateEmail(@Valid @RequestBody ChangedEmailDto changedEmailDto) {
+
+        LOGGER.info("--- update user email");
+        LOGGER.info("--- login: {}", changedEmailDto.getLogin());
+        LOGGER.info("--- new email: {}", changedEmailDto.getNewEmail());
+
+        boolean status = userService.updateEmail(changedEmailDto);
 
         return status
                 ? new ResponseEntity<>(HttpStatus.OK)

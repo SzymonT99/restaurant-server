@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Set;
 
@@ -19,9 +20,12 @@ public class User {
     private Long userId;
 
     @NotNull
+
     private String login;
 
     @NotNull
+    @JsonIgnore
+
     private String password;
 
     @NotNull
@@ -68,8 +72,9 @@ public class User {
     public User() {
     }
 
-    public User(@NotNull String login, @NotNull String password, @NotNull @Email String email, @NotNull String phoneNumber,
-                @NotNull boolean active, @NotNull Integer incorrectLoginCounter, @NotNull boolean accountVerification) {
+    public User(@NotNull  String login, @NotNull String password,
+                @NotNull @Email String email, @NotNull String phoneNumber, @NotNull boolean active,
+                @NotNull Integer incorrectLoginCounter, @NotNull boolean accountVerification) {
         this.login = login;
         this.password = password;
         this.email = email;

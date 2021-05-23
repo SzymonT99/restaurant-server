@@ -5,7 +5,6 @@ import com.restaurant.springboot.domain.dto.LikedMenuDto;
 import com.restaurant.springboot.domain.dto.MenuDto;
 import com.restaurant.springboot.domain.entity.Category;
 
-import com.restaurant.springboot.domain.entity.Details;
 import com.restaurant.springboot.service.CategoryService;
 import com.restaurant.springboot.service.DetailsService;
 import com.restaurant.springboot.service.MenuService;
@@ -57,7 +56,7 @@ public class MenuApiController {
     public ResponseEntity<List<LikedMenuDto>> getUserLikedMenuId(@PathVariable("userId") Long userId) {
 
         LOGGER.info("--- Get liked menu for userId: {}", userId);
-        return new ResponseEntity<>(menuService.getUserLikedMenuId(userId), HttpStatus.OK);
+        return new ResponseEntity<>(menuService.getUserLikedMenu(userId), HttpStatus.OK);
     }
 
     @GetMapping("/favourite-menu/user/{userId}")

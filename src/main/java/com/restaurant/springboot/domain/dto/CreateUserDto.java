@@ -1,6 +1,7 @@
 package com.restaurant.springboot.domain.dto;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
 public class CreateUserDto {
@@ -11,6 +12,8 @@ public class CreateUserDto {
     @Email
     private String email;
 
+    @Positive
+    @Size(min = 9, max = 9)
     private String phoneNumber;
 
     @Size(min = 10, max = 50)
@@ -19,8 +22,8 @@ public class CreateUserDto {
     public CreateUserDto() {
     }
 
-    public CreateUserDto(@Size(min = 4, max = 20) String login, @Email String email, String phoneNumber,
-                         @Size(min = 10, max = 50) String password) {
+    public CreateUserDto(@Size(min = 4, max = 20) String login, @Email String email,
+                         @Positive @Size(min = 9, max = 9) String phoneNumber, @Size(min = 10, max = 50) String password) {
         this.login = login;
         this.email = email;
         this.phoneNumber = phoneNumber;

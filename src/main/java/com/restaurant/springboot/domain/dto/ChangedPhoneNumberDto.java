@@ -1,17 +1,22 @@
 package com.restaurant.springboot.domain.dto;
 
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
+
 public class ChangedPhoneNumberDto {
 
     private String login;
-    private String oldPhoneNumber;
+    private String password;
+    @Positive
+    @Size(min = 9, max = 9)
     private String newPhoneNumber;
 
     public ChangedPhoneNumberDto() {
     }
 
-    public ChangedPhoneNumberDto(String login, String oldPhoneNumber, String newPhoneNumber) {
+    public ChangedPhoneNumberDto(String login, String password, @Positive @Size(min = 9, max = 9) String newPhoneNumber) {
         this.login = login;
-        this.oldPhoneNumber = oldPhoneNumber;
+        this.password = password;
         this.newPhoneNumber = newPhoneNumber;
     }
 
@@ -23,12 +28,12 @@ public class ChangedPhoneNumberDto {
         this.login = login;
     }
 
-    public String getOldPhoneNumber() {
-        return oldPhoneNumber;
+    public String getPassword() {
+        return password;
     }
 
-    public void setOldPhoneNumber(String oldPhoneNumber) {
-        this.oldPhoneNumber = oldPhoneNumber;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getNewPhoneNumber() {
