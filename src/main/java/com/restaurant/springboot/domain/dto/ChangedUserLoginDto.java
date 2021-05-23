@@ -1,15 +1,18 @@
 package com.restaurant.springboot.domain.dto;
 
+import javax.validation.constraints.Size;
+
 public class ChangedUserLoginDto {
 
     private String oldLogin;
+    @Size(min = 4, max = 20)
     private String newLogin;
     private String password;
 
     public ChangedUserLoginDto() {
     }
 
-    public ChangedUserLoginDto(String oldLogin, String newLogin, String password) {
+    public ChangedUserLoginDto(String oldLogin, @Size(min = 4, max = 20) String newLogin, String password) {
         this.oldLogin = oldLogin;
         this.newLogin = newLogin;
         this.password = password;

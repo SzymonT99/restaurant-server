@@ -11,7 +11,7 @@ public interface MenuService {
 
     List<MenuDto> getSpecialOfferMenu();
 
-    List<LikedMenuDto> getUserLikedMenuId(Long userId);
+    List<LikedMenuDto> getUserLikedMenu(Long userId);
 
     List<MenuDto> getUserFavouriteMenu(Long userId);
 

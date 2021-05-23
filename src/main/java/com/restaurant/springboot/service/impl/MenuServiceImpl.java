@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class MenuServiceImpl implements MenuService {
@@ -56,10 +57,10 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public List<LikedMenuDto> getUserLikedMenuId(Long userId) {
+    public List<LikedMenuDto> getUserLikedMenu(Long userId) {
 
         User user = userRepository.findById(userId).orElse(null);
-        List<Menu> userMenuFavouriteList = user.getLikedMenu();
+        List<Menu> userMenuFavouriteList = Objects.requireNonNull(user).getLikedMenu();
 
         return menuLikedMapper.mapToDto(userMenuFavouriteList);
     }
@@ -68,7 +69,7 @@ public class MenuServiceImpl implements MenuService {
     public List<MenuDto> getUserFavouriteMenu(Long userId) {
 
         User user = userRepository.findById(userId).orElse(null);
-        List<Menu> userMenuFavouriteList = user.getLikedMenu();
+        List<Menu> userMenuFavouriteList = Objects.requireNonNull(user).getLikedMenu();
         return menuListMapper.mapToDto(userMenuFavouriteList);
     }
 
@@ -76,7 +77,7 @@ public class MenuServiceImpl implements MenuService {
     public void saveAsFavourite(Long menuItemId, Long userId) {
 
         User user = userRepository.findById(userId).orElse(null);
-        List<Menu> userMenuFavouriteList = user.getLikedMenu();
+        List<Menu> userMenuFavouriteList = Objects.requireNonNull(user).getLikedMenu();
 
         Menu newLikedMenuItem = menuRepository.findById(menuItemId).orElse(null);
 

@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 
 @Service
@@ -107,7 +108,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findById(orderId).orElse(null);
         Menu selectedMenuItem = menuRepository.findById(menuId).orElse(null);
 
-        List<MenuOrders> menuOrdersList = order.getMenuOrders();
+        List<MenuOrders> menuOrdersList = Objects.requireNonNull(order).getMenuOrders();
         MenuOrders menuOrders = new MenuOrders(selectedMenuItem, order);
         menuOrdersList.add(menuOrders);
 
