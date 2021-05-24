@@ -43,10 +43,11 @@ public class Reservation {
     public Reservation() {
     }
 
-    public Reservation(Long reservationNumber, @NotNull Date startBooking, @NotNull Date endBooking) {
-        this.reservationNumber = reservationNumber;
+    public Reservation(@NotNull Date startBooking, @NotNull Date endBooking, User client, RestaurantTable table) {
         this.startBooking = startBooking;
         this.endBooking = endBooking;
+        this.client = client;
+        this.table = table;
     }
 
     public Integer getTableId() {
@@ -96,4 +97,5 @@ public class Reservation {
     public void setTable(RestaurantTable table) {
         this.table = table;
     }
+
 }
