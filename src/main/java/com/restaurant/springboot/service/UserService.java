@@ -4,6 +4,7 @@ import com.restaurant.springboot.domain.dto.*;
 import com.restaurant.springboot.domain.entity.User;
 import com.restaurant.springboot.domain.model.AuthorizationStatus;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
@@ -31,4 +32,5 @@ public interface UserService {
 
     Long getUserIdByLogin(String login);
 
+    ModelAndView activateAccount(ModelAndView modelAndView, String confirmationToken);
 }

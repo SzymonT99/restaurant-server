@@ -37,7 +37,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // adresy, ktore nie sa autoryzowane:
                 .authorizeRequests().antMatchers("/restaurant/create-user", "/restaurant/user/login",
                 "/restaurant/categories", "/restaurant/menu/special-offer", "/restaurant/menu-category/{categoryId}",
-                "/restaurant/menu/details/{menuId}", "/restaurant/users").permitAll().
+                "/restaurant/menu/details/{menuId}", "/restaurant/users", "/restaurant/account-activation")
+                .permitAll().
                 //  pozostale adresy wymagaja do autoryzacji tokena
                         anyRequest().authenticated().and().
                         exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()

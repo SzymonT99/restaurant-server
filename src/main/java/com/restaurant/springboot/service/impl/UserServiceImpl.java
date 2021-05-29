@@ -2,16 +2,21 @@ package com.restaurant.springboot.service.impl;
 
 import com.restaurant.springboot.controller.UserApiController;
 import com.restaurant.springboot.domain.dto.*;
+import com.restaurant.springboot.domain.entity.ConfirmationToken;
 import com.restaurant.springboot.domain.entity.User;
 import com.restaurant.springboot.domain.model.AuthorizationStatus;
+import com.restaurant.springboot.domain.repository.ConfirmationTokenRepository;
 import com.restaurant.springboot.domain.repository.UserRepository;
+import com.restaurant.springboot.service.EmailService;
 import com.restaurant.springboot.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.ModelAndView;
 
 
 import javax.validation.ConstraintViolation;
@@ -29,12 +34,17 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final Validator validator = factory.getValidator();
+    private final ConfirmationTokenRepository confirmationTokenRepository;
+    private final EmailService emailService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserApiController.class);
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, ConfirmationTokenRepository confirmationTokenRepository,
+                           EmailService emailService) {
         this.userRepository = userRepository;
+        this.confirmationTokenRepository = confirmationTokenRepository;
+        this.emailService = emailService;
     }
 
     @Override
@@ -55,7 +65,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public HttpStatus registerUser(CreateUserDto createUser) {
 
-        if (userRepository.existsByLogin(createUser.getLogin())) {
+        if (userRepository.existsByLogin(createUser.getLogin())
+                || userRepository.existsByEmail(createUser.getEmail())) {
             return HttpStatus.FORBIDDEN;
         }
 
@@ -73,14 +84,47 @@ public class UserServiceImpl implements UserService {
             BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
             User user = new User(createUser.getLogin(), bCryptPasswordEncoder.encode(createUser.getPassword()),
-                    createUser.getEmail(), createUser.getPhoneNumber(), true, 0, true);
+                    createUser.getEmail(), createUser.getPhoneNumber(), true, 0, false);
 
             userRepository.save(user);
+
+            ConfirmationToken confirmationToken = new ConfirmationToken(user);
+            confirmationTokenRepository.save(confirmationToken);
+
+            // Wysyłanie emaila z kodem aktywujacym konto
+            SimpleMailMessage mailMessage = new SimpleMailMessage();
+            mailMessage.setTo(user.getEmail());
+            mailMessage.setSubject("Restaurant App - Weryfikacja adresu email.");
+            mailMessage.setFrom("restaurant.toik2021@gmail.com");
+            mailMessage.setText("Apy zweryfikować podany email wciśnij podany link: \n"
+                    +"http://localhost:8080/restaurant/account-activation?token=" + confirmationToken.getToken());
+
+            emailService.sendVerificationEmail(mailMessage);
 
             return HttpStatus.CREATED;
         }
 
         return HttpStatus.BAD_REQUEST;
+    }
+
+    @Override
+    public ModelAndView activateAccount(ModelAndView modelAndView, String token) {
+
+        ConfirmationToken confirmationToken = confirmationTokenRepository.findByToken(token);
+
+        if(confirmationToken != null) {
+            User user = userRepository.findByLogin(confirmationToken.getUser().getLogin());
+            user.setAccountVerification(true);
+            userRepository.save(user);
+            modelAndView.addObject("login",user.getLogin());
+            modelAndView.setViewName("SuccessfulActivation");
+        }
+        else {
+            modelAndView.addObject("message","The link is invalid or broken!");
+            modelAndView.setViewName("WrongActivation");
+        }
+
+        return modelAndView;
     }
 
     @Override
@@ -271,4 +315,5 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByLogin(login);
         return user.getUserId();
     }
+
 }
