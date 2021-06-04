@@ -1,12 +1,10 @@
 package com.restaurant.springboot.domain.entity;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.UUID;
 
 @Entity
-@Table(name="confirmation_token")
-public class ConfirmationToken {
+@Table(name="user_token")
+public class UserToken {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,20 +13,19 @@ public class ConfirmationToken {
 
     private String token;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdDate;
-
     @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "user_id")
     private User user;
 
-    public ConfirmationToken() {
+    private boolean active;
+
+    public UserToken() {
     }
 
-    public ConfirmationToken(User user) {
+    public UserToken(String token, User user, boolean active) {
+        this.token = token;
         this.user = user;
-        this.createdDate = new Date();
-        this.token = UUID.randomUUID().toString();
+        this.active = active;
     }
 
     public Long getTokenId() {
@@ -47,19 +44,19 @@ public class ConfirmationToken {
         this.token = token;
     }
 
-    public Date getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
-    }
-
     public User getUser() {
         return user;
     }
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

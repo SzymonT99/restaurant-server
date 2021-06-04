@@ -35,13 +35,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable()
                 // adresy, ktore nie sa autoryzowane:
-                .authorizeRequests().antMatchers("/restaurant/create-user", "/restaurant/user/login",
-                "/restaurant/categories", "/restaurant/menu/special-offer", "/restaurant/menu-category/{categoryId}",
-                "/restaurant/menu/details/{menuId}", "/restaurant/users", "/restaurant/account-activation")
+                .authorizeRequests().antMatchers(
+                "/restaurant/create-user",
+                "/restaurant/user/login",
+                "/restaurant/categories",
+                "/restaurant/menu/special-offer",
+                "/restaurant/menu-category/{categoryId}",
+                "/restaurant/menu/details/{menuId}",
+                "/restaurant/users",
+                "/restaurant/account-activation")
                 .permitAll().
                 //  pozostale adresy wymagaja do autoryzacji tokena
                         anyRequest().authenticated().and().
-                        exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
+                exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         // Filtr ktory przeprowadza walidacje tokenow

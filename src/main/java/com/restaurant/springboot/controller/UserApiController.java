@@ -2,12 +2,8 @@ package com.restaurant.springboot.controller;
 
 import com.restaurant.springboot.config.JwtTokenUtil;
 import com.restaurant.springboot.domain.dto.*;
-import com.restaurant.springboot.domain.entity.ConfirmationToken;
 import com.restaurant.springboot.domain.entity.User;
 import com.restaurant.springboot.domain.model.AuthorizationStatus;
-import com.restaurant.springboot.domain.repository.ConfirmationTokenRepository;
-import com.restaurant.springboot.domain.repository.UserRepository;
-import com.restaurant.springboot.service.EmailService;
 import com.restaurant.springboot.service.UserService;
 import com.restaurant.springboot.service.impl.JwtUserDetailsService;
 import org.slf4j.Logger;
@@ -84,6 +80,18 @@ public class UserApiController {
         }
     }
 
+    @PostMapping("/user/logout/{userId}")
+    public ResponseEntity<?> userLogout(@PathVariable("userId") Long userId) {
+
+        LOGGER.info("--- logout user");
+
+        boolean status = userService.logout(userId);
+        return status
+                ? new ResponseEntity<>(HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+    }
+
     @DeleteMapping("/delete-user")
     public ResponseEntity<Void> deleteUser(@RequestBody DeleteUserDto deleteUserDto) {
 
@@ -121,8 +129,7 @@ public class UserApiController {
             JwtResponse jwtResponse = new JwtResponse(token, userId);
 
             return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
-        }
-        else {
+        } else {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
@@ -141,8 +148,7 @@ public class UserApiController {
             JwtResponse jwtResponse = new JwtResponse(token, userId);
 
             return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
-        }
-        else {
+        } else {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }

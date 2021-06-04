@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://thymeleaf.org">
+<html lang="pl" xmlns:th="http://thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Aktywowano konto</title>
+    <title>Niepoprawna weryfikacja</title>
     <style>
         body {
             background-image: url("https://images.pexels.com/photos/958545/pexels-photo-958545.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260");
@@ -41,7 +41,7 @@
     <div class="content">
         <h2 style="margin-bottom: 10px;">Niepoprawny token weryfikacyjny</h2>
         <hr style="width: 90%; border-color: #ff8c29; margin-bottom: 40px;">
-        <p>Podaj poprawny kod aktywujący konto.</p>
+        <p th:text="${message}">MESSAGE</p>
     </div>
 </div>
 </body>

@@ -33,4 +33,6 @@ public interface UserService {
     Long getUserIdByLogin(String login);
 
     ModelAndView activateAccount(ModelAndView modelAndView, String confirmationToken);
+
+    boolean logout(Long userId);
 }

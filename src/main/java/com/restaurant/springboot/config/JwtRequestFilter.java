@@ -39,6 +39,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         final String requestTokenHeader = request.getHeader("Authorization");
+        final Long userId = request.getHeader("UserID") == null ? null : Long.valueOf(request.getHeader("UserID"));
 
         String username = null;
         String jwtToken = null;
@@ -48,12 +49,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             try {
                 username = jwtTokenUtil.getUsernameFromToken(jwtToken);
             } catch (IllegalArgumentException e) {
-                System.out.println("Unable to get JWT Token");
+                logger.warn("Unable to get JWT Token");
             } catch (ExpiredJwtException e) {
-                System.out.println("JWT Token has expired");
+                logger.warn("JWT Token has expired");
             }
-        } else {
-            logger.warn("The request doesn't contain a token");
         }
 
         // Walidacja tokenu
@@ -62,21 +61,19 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             try {
                 UserDetails userDetails = this.jwtUserDetailsService.loadUserByUsername(username);
 
-                if (jwtTokenUtil.validateToken(jwtToken, Objects.requireNonNull(userDetails))) {
+
+                if (jwtTokenUtil.validateToken(jwtToken, Objects.requireNonNull(userDetails), userId)) {
 
                     logger.info("Token is correct");
                     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                             userDetails, null, userDetails.getAuthorities());
-                    usernamePasswordAuthenticationToken
-                            .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     // Autentykacja obecnego użytkownika
                     SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
                 }
             } catch (UsernameNotFoundException unf) {
                 logger.warn("There is no user with the given login");
             }
-
-
         }
         chain.doFilter(request, response);
     }

@@ -6,15 +6,20 @@ public class ReservationDto {
     private Integer bookingTime;
     private Long userId;
     private Integer numberOfTableSeats;
+    private String clientName;
+    private String clientSurname;
 
     public ReservationDto() {
     }
 
-    public ReservationDto(String startBooking, Integer bookingTime, Long userId, Integer numberOfTableSeats) {
+    public ReservationDto(String startBooking, Integer bookingTime, Long userId, Integer numberOfTableSeats,
+                          String clientName, String clientSurname) {
         this.startBooking = startBooking;
         this.bookingTime = bookingTime;
         this.userId = userId;
         this.numberOfTableSeats = numberOfTableSeats;
+        this.clientName = clientName;
+        this.clientSurname = clientSurname;
     }
 
     public String getStartBooking() {
@@ -47,5 +52,21 @@ public class ReservationDto {
 
     public void setNumberOfTableSeats(Integer numberOfTableSeats) {
         this.numberOfTableSeats = numberOfTableSeats;
+    }
+
+    public String getClientName() {
+        return clientName;
+    }
+
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
+    }
+
+    public String getClientSurname() {
+        return clientSurname;
+    }
+
+    public void setClientSurname(String clientSurname) {
+        this.clientSurname = clientSurname;
     }
 }
