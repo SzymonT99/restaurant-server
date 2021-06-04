@@ -16,7 +16,7 @@ public class DetailsMapper {
         detailsDto.setMenuId(menuItem.getMenuId());
         detailsDto.setItemName(menuItem.getItemName());
         detailsDto.setPrice(menuItem.getPrice());
-        detailsDto.setRate(menuItem.getAverageRate());
+        detailsDto.setRate(Math.round(menuItem.getAverageRate() * 100.0) / 100.0);
         detailsDto.setIngredients(Arrays.asList(menuItem.getIngredients().split(", ")));
         detailsDto.setMenuItemImage(menuItem.getMenuItemImage());
         detailsDto.setCategoryName(menuItem.getCategory().getCategoryName());

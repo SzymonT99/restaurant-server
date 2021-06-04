@@ -2,6 +2,7 @@ package com.restaurant.springboot.service;
 
 import com.restaurant.springboot.domain.dto.ReservationDto;
 import com.restaurant.springboot.domain.entity.RestaurantTable;
+import com.restaurant.springboot.domain.entity.User;
 
 import java.util.Date;
 import java.util.List;
@@ -15,4 +16,6 @@ public interface ReservationService {
     List<RestaurantTable> getTables(Integer seats);
 
     boolean deleteLastUserReservation(Long userId);
+
+    void sendBookingEmail(ReservationDto reservationDto, User user);
 }

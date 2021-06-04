@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -26,6 +27,7 @@ public class UserApiController {
     private final UserService userService;
     private final JwtTokenUtil jwtTokenUtil;
     private final JwtUserDetailsService userDetailsService;
+
 
     @Autowired
     public UserApiController(UserService userService, JwtTokenUtil jwtTokenUtil, JwtUserDetailsService userDetailsService) {
@@ -45,6 +47,13 @@ public class UserApiController {
 
         return new ResponseEntity<>(code);
     }
+
+    @GetMapping("/account-activation")
+    public ModelAndView confirmUserAccount(ModelAndView modelAndView, @RequestParam("token") String token) {
+
+        return userService.activateAccount(modelAndView, token);
+    }
+
 
     @PostMapping("/user/login")
     public ResponseEntity<?> authorizeUser(@RequestBody UserAuthorizationDto userVerificationDto) throws Exception {
@@ -69,6 +78,18 @@ public class UserApiController {
         } else {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
+    }
+
+    @PostMapping("/user/logout/{userId}")
+    public ResponseEntity<?> userLogout(@PathVariable("userId") Long userId) {
+
+        LOGGER.info("--- logout user");
+
+        boolean status = userService.logout(userId);
+        return status
+                ? new ResponseEntity<>(HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
     }
 
     @DeleteMapping("/delete-user")
@@ -108,8 +129,7 @@ public class UserApiController {
             JwtResponse jwtResponse = new JwtResponse(token, userId);
 
             return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
-        }
-        else {
+        } else {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
@@ -128,8 +148,7 @@ public class UserApiController {
             JwtResponse jwtResponse = new JwtResponse(token, userId);
 
             return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
-        }
-        else {
+        } else {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }

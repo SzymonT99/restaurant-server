@@ -32,7 +32,6 @@ public class Order {
     private String postalCode;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @NotNull
     private Date date;
 
     @Enumerated(EnumType.STRING)
@@ -52,7 +51,7 @@ public class Order {
     }
 
     public Order(@NotNull Float totalPrice, @NotNull String deliveryPlace, @NotNull String street,
-                 @NotNull String postalCode, @NotNull Date date, Status status) {
+                 @NotNull String postalCode, Date date, Status status) {
         this.totalPrice = totalPrice;
         this.deliveryPlace = deliveryPlace;
         this.street = street;

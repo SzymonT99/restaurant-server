@@ -1,5 +1,6 @@
 package com.restaurant.springboot.service.impl;
 
+import com.restaurant.springboot.domain.dto.OrderDetailsDto;
 import com.restaurant.springboot.domain.dto.OrderItemDto;
 import com.restaurant.springboot.domain.entity.Menu;
 import com.restaurant.springboot.domain.entity.MenuOrders;
@@ -13,8 +14,14 @@ import com.restaurant.springboot.domain.repository.OrderRepository;
 import com.restaurant.springboot.domain.repository.UserRepository;
 import com.restaurant.springboot.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -29,15 +36,20 @@ public class OrderServiceImpl implements OrderService {
     private final OrderListMapper orderListMapper;
     private final UserRepository userRepository;
     private final MenuRepository menuRepository;
+    private final JavaMailSender javaMailSender;
+    private final TemplateEngine templateEngine;
 
     @Autowired
     public OrderServiceImpl(MenuOrdersRepository menuOrdersRepository, OrderRepository orderRepository,
-                            OrderListMapper orderListMapper, UserRepository userRepository, MenuRepository menuRepository) {
+                            OrderListMapper orderListMapper, UserRepository userRepository, MenuRepository menuRepository,
+                            JavaMailSender javaMailSender, TemplateEngine templateEngine) {
         this.menuOrdersRepository = menuOrdersRepository;
         this.orderRepository = orderRepository;
         this.orderListMapper = orderListMapper;
         this.userRepository = userRepository;
         this.menuRepository = menuRepository;
+        this.javaMailSender = javaMailSender;
+        this.templateEngine = templateEngine;
     }
 
     @Override
@@ -55,7 +67,6 @@ public class OrderServiceImpl implements OrderService {
         }
 
         orderList = orderListMapper.mapToDto(menuList);
-
 
         // sprawdzanie występowania powtórzonych elementów w zamówieniu
         for (int i = 0; i < orderList.size(); i++) {
@@ -90,11 +101,7 @@ public class OrderServiceImpl implements OrderService {
         else {
             Order emptyOrder = new Order();
 
-//        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-//        String date = String.valueOf(new Date());
-
             emptyOrder.setPurchaser(user);
-            emptyOrder.setDate(new Date());
             emptyOrder.setStatus(Status.SELECTION);
 
             orderRepository.save(emptyOrder);
@@ -134,9 +141,65 @@ public class OrderServiceImpl implements OrderService {
     public Integer countAllOrderItems(Long orderId) {
 
         Order order = orderRepository.findById(orderId).orElse(null);
-        Integer numberOfOrderItems = menuOrdersRepository.countAllByOrderItem(order);
+        Integer numberOfOrderItems = null;
+        if (order != null) {
+            numberOfOrderItems = menuOrdersRepository.countAllByOrderItem(order);
+        }
 
         return numberOfOrderItems;
     }
+
+    @Override
+    public void sendInvoiceToEmail(OrderDetailsDto details, Long userId, Long orderId) {
+
+        User user = userRepository.findById(userId).orElse(null);
+        Order order = orderRepository.findById(orderId).orElse(null);
+
+        if (user != null && order != null) {
+            order.setStatus(Status.ACCEPTED);
+            order.setDate(new Date());
+            order.setDeliveryPlace(details.getTown());
+            order.setStreet(details.getStreet());
+            order.setPostalCode(details.getPostalCode());
+
+            List<Menu> menuList = new ArrayList<>();
+
+            for (MenuOrders item : order.getMenuOrders()) {
+                Menu menuItem = item.getMenuItem();
+                menuList.add(menuItem);
+            }
+
+            Float totalPrice = 0F;
+            for (Menu menu : menuList) {
+               totalPrice += menu.getPrice();
+            }
+
+            order.setTotalPrice(totalPrice);
+
+            // wysłanie emaila
+            Context context = new Context();
+            context.setVariable("orderList", getOrderItemsByOrderId(orderId));
+            context.setVariable("totalPrice", totalPrice + " zł");
+            context.setVariable("payment", details.getPaymentMethod());
+            context.setVariable("town", details.getTown());
+            context.setVariable("street", details.getStreet());
+            context.setVariable("postalCode", details.getPostalCode());
+            String html = templateEngine.process("Order", context);
+
+            MimeMessage mail = javaMailSender.createMimeMessage();
+            try {
+                MimeMessageHelper helper = new MimeMessageHelper(mail, true);
+                helper.setTo(user.getEmail());
+                helper.setFrom("restaurant.toik2021@gmail.com");
+                helper.setSubject("Restaurant App - Potwierdzenie zamówienia");
+                helper.setSentDate(new Date());
+                helper.setText(html, true);
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            }
+            javaMailSender.send(mail);
+        }
+    }
+
 
 }

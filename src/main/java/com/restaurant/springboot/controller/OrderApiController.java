@@ -1,5 +1,6 @@
 package com.restaurant.springboot.controller;
 
+import com.restaurant.springboot.domain.dto.OrderDetailsDto;
 import com.restaurant.springboot.domain.dto.OrderItemDto;
 import com.restaurant.springboot.service.OrderService;
 import org.slf4j.Logger;
@@ -8,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.ParseException;
 import java.util.List;
 
 @RestController
@@ -76,6 +76,20 @@ public class OrderApiController {
         Integer orderQuantity = orderService.countAllOrderItems(orderId);
 
         return new ResponseEntity<>(orderQuantity, HttpStatus.OK);
+    }
+
+    @PostMapping("/confirm-order")
+    public ResponseEntity<Void> confirmOrder(@RequestBody OrderDetailsDto deliveryPlaceDto,
+                                           @RequestParam(value = "userId") Long userId,
+                                           @RequestParam(value = "orderId") Long orderId) {
+
+        LOGGER.info("--- confirm order: ");
+        LOGGER.info("--- userId: {}", userId);
+        LOGGER.info("--- orderId: {}", orderId);
+
+        orderService.sendInvoiceToEmail(deliveryPlaceDto, userId, orderId);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

@@ -20,7 +20,7 @@ public class MenuListMapper {
             menuDto.setMenuId(menuItem.getMenuId());
             menuDto.setItemName(menuItem.getItemName());
             menuDto.setPrice(menuItem.getPrice());
-            menuDto.setRate(menuItem.getAverageRate());
+            menuDto.setRate(Math.round(menuItem.getAverageRate() * 100.0) / 100.0);
             menuDto.setIngredients(Arrays.asList(menuItem.getIngredients().split(", ")));
             menuDto.setMenuItemImage(menuItem.getMenuItemImage());
             menuDto.setDetailsId(menuItem.getDetails().getDetailsId());

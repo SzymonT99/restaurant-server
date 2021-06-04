@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Aktywowano konto</title>
+    <style>
+        body {
+            background-image: url("https://images.pexels.com/photos/958545/pexels-photo-958545.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260");
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+            background-color: rgba(0,0,0,0.7);
+            background-blend-mode: color;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            margin-top: 240px;
+        }
+        .content {
+            display: flex;
+            flex-direction: column;
+            background-color: white;
+            width: 30%;
+            height: 250px;
+            border-radius: 20px;
+            -webkit-box-shadow: 0px 0px 17px 10px rgba(0,0,0,0.68);
+            box-shadow: 0px 0px 17px 10px rgba(0,0,0,0.68);
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .userName {
+            color: #ff8c29;
+            font-size: 18px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: bold;
+        }
+        p {
+            margin: 2px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="content">
+        <h2 style="margin-bottom: 10px;">Pomyślna weryfikacja konta</h2>
+        <hr style="width: 90%; border-color: #ff8c29; margin-bottom: 40px;">
+        <p>Konto użytkownika o nazwie</p>
+        <p class="userName" th:text="${login}">LOGIN</p>
+        <p>jest już aktywne.</p>
+    </div>
+</div>
+</body>
+</html>
