@@ -2,6 +2,7 @@ package com.restaurant.springboot.service;
 
 import com.restaurant.springboot.domain.dto.OrderDetailsDto;
 import com.restaurant.springboot.domain.dto.OrderItemDto;
+import com.restaurant.springboot.domain.entity.Order;
 
 import java.util.List;
 
@@ -18,5 +19,7 @@ public interface OrderService {
     Integer countAllOrderItems (Long orderId);
 
     void sendInvoiceToEmail(OrderDetailsDto details, Long userId, Long orderId);
+
+    List<Order> getAllOrderForUser(Long userId);
 
 }

@@ -2,6 +2,7 @@ package com.restaurant.springboot.controller;
 
 import com.restaurant.springboot.domain.dto.OrderDetailsDto;
 import com.restaurant.springboot.domain.dto.OrderItemDto;
+import com.restaurant.springboot.domain.entity.Order;
 import com.restaurant.springboot.service.OrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,8 @@ public class OrderApiController {
 
         Long orderId = orderService.createOrder(userId);
 
+        LOGGER.info("--- created orderId: {}", orderId);
+
         return new ResponseEntity<>(orderId, HttpStatus.OK);
     }
 
@@ -70,9 +73,6 @@ public class OrderApiController {
     @GetMapping("/order/quantity/{orderId}")
     public ResponseEntity<Integer> getOrderQuantity(@PathVariable("orderId") Long orderId) {
 
-        LOGGER.info("--- order quantity: ");
-        LOGGER.info("--- orderId: {}", orderId);
-
         Integer orderQuantity = orderService.countAllOrderItems(orderId);
 
         return new ResponseEntity<>(orderQuantity, HttpStatus.OK);
@@ -92,5 +92,15 @@ public class OrderApiController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping("/orders-history/{userId}")
+    public ResponseEntity<List<Order>> getOrdersForUser(@PathVariable("userId") Long userId) {
+
+        LOGGER.info("--- order history: ");
+        LOGGER.info("--- userId: {}", userId);
+
+        List<Order> orderHistory = orderService.getAllOrderForUser(userId);
+
+        return new ResponseEntity<>(orderHistory, HttpStatus.OK);
+    }
 }
 

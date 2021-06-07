@@ -49,6 +49,8 @@ public class MenuApiController {
     @GetMapping("/menu-category/{categoryId}")
     public ResponseEntity<List<MenuDto>> getMenuOfCategory(@PathVariable("categoryId") Long categoryId) {
 
+        LOGGER.info("--- Get menu-category by id: {}", categoryId);
+
         return new ResponseEntity<>(menuService.getMenuByCategoryId(categoryId), HttpStatus.OK);
     }
 

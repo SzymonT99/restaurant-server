@@ -5,7 +5,6 @@ import com.restaurant.springboot.domain.dto.*;
 import com.restaurant.springboot.domain.entity.ConfirmationToken;
 import com.restaurant.springboot.domain.entity.User;
 import com.restaurant.springboot.domain.entity.UserToken;
-import com.restaurant.springboot.domain.model.AuthorizationStatus;
 import com.restaurant.springboot.domain.repository.ConfirmationTokenRepository;
 import com.restaurant.springboot.domain.repository.UserRepository;
 import com.restaurant.springboot.domain.repository.UserTokenRepository;
@@ -19,7 +18,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
-
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -140,14 +138,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public AuthorizationStatus checkLogin(UserAuthorizationDto userVerification) {
+    public Message checkLogin(UserAuthorizationDto userVerification) {
 
+        Message message = new Message();
+        
         if (userRepository.existsByLogin(userVerification.getLogin())) {
 
             User user = userRepository.findByLogin(userVerification.getLogin());
 
             if (!user.isActive()) {
-                return AuthorizationStatus.FORBIDDEN;
+                message.setCode("403");
+                message.setCodeName("FORBIDDEN");
+                message.setContent("Konto zostało zablokowane");
+                return message;
+            }
+
+            if (!user.isAccountVerification()) {
+                message.setCode("403");
+                message.setCodeName("FORBIDDEN");
+                message.setContent("Nie aktywowano konta");
+                return message;
             }
 
             BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
@@ -158,7 +168,10 @@ public class UserServiceImpl implements UserService {
                 user.setActive(user.getIncorrectLoginCounter() < MAX_LOGIN_ATTEMPTS);
                 userRepository.save(user);
 
-                return AuthorizationStatus.UNAUTHORIZED;
+                message.setCode("401");
+                message.setCodeName("UNAUTHORIZED");
+                message.setContent("Nieprawidłowy login lub hasło");
+                return message;
             }
 
             if (bCryptPasswordEncoder.matches(userVerification.getPassword(), user.getPassword())
@@ -167,11 +180,17 @@ public class UserServiceImpl implements UserService {
                 user.setIncorrectLoginCounter(0);
                 userRepository.save(user);
 
-                return AuthorizationStatus.ACCESS;
+                message.setCode("200");
+                message.setCodeName("ACCESS");
+                message.setContent("Utworzono konto");
+                return message;
             }
         }
 
-        return AuthorizationStatus.UNAUTHORIZED;
+        message.setCode("404");
+        message.setCodeName("NOT_FOUND");
+        message.setContent("Nie istnieje użytkownik o podanej nazwie");
+        return message;
     }
 
     @Override

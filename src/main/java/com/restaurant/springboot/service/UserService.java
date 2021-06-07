@@ -2,7 +2,6 @@ package com.restaurant.springboot.service;
 
 import com.restaurant.springboot.domain.dto.*;
 import com.restaurant.springboot.domain.entity.User;
-import com.restaurant.springboot.domain.model.AuthorizationStatus;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -18,7 +17,7 @@ public interface UserService {
 
     HttpStatus registerUser(CreateUserDto createUser);
 
-    AuthorizationStatus checkLogin(UserAuthorizationDto userVerification);
+    Message checkLogin(UserAuthorizationDto userVerification);
 
     boolean deleteUser (DeleteUserDto deleteUser);
 

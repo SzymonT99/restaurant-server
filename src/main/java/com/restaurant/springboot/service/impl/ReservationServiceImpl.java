@@ -28,7 +28,7 @@ import java.util.Objects;
 public class ReservationServiceImpl implements ReservationService {
 
     public static final long HOUR = 3600 * 1000;
-    public static final int CLOSING_TIME = 1;   // godz. 01.00
+    public static final int CLOSING_TIME = 24;   // godz. 24.00
     public static final int OPENING_TIME = 8;   // godz 08.00
     public static final int MAX_BOOKING_HOUR = 8;
     private final ReservationRepository reservationRepository;
@@ -66,7 +66,7 @@ public class ReservationServiceImpl implements ReservationService {
             e.printStackTrace();
         }
 
-        if (!checkAvailabilityOfDate(startBooking, reservationDto.getBookingTime())) return false;
+        if (!checkAvailabilityOfDate(Objects.requireNonNull(startBooking), reservationDto.getBookingTime())) return false;
 
         Date endBooking = new Date(Objects.requireNonNull(startBooking).getTime() + (reservationDto.getBookingTime() * HOUR));
 
@@ -90,12 +90,17 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public boolean checkAvailabilityOfDate(Date startBooking, Integer time) {
 
+        if (startBooking.before(new Date())) return false;
+
         Calendar cal = Calendar.getInstance();
         Date endBooking = new Date(Objects.requireNonNull(startBooking).getTime() + (time * HOUR));
         cal.setTime(endBooking);
         int endHours = cal.get(Calendar.HOUR_OF_DAY);
+        cal.setTime(startBooking);
+        int startHours = cal.get(Calendar.HOUR_OF_DAY);
 
-        return time <= MAX_BOOKING_HOUR && (endHours < CLOSING_TIME || endHours >= OPENING_TIME);
+        return time <= MAX_BOOKING_HOUR && startHours >= OPENING_TIME;
+
     }
 
     @Override

@@ -2,16 +2,10 @@ package com.restaurant.springboot.service.impl;
 
 import com.restaurant.springboot.domain.dto.OrderDetailsDto;
 import com.restaurant.springboot.domain.dto.OrderItemDto;
-import com.restaurant.springboot.domain.entity.Menu;
-import com.restaurant.springboot.domain.entity.MenuOrders;
-import com.restaurant.springboot.domain.entity.Order;
-import com.restaurant.springboot.domain.entity.User;
+import com.restaurant.springboot.domain.entity.*;
 import com.restaurant.springboot.domain.mapper.OrderListMapper;
 import com.restaurant.springboot.domain.model.Status;
-import com.restaurant.springboot.domain.repository.MenuOrdersRepository;
-import com.restaurant.springboot.domain.repository.MenuRepository;
-import com.restaurant.springboot.domain.repository.OrderRepository;
-import com.restaurant.springboot.domain.repository.UserRepository;
+import com.restaurant.springboot.domain.repository.*;
 import com.restaurant.springboot.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -22,10 +16,8 @@ import org.thymeleaf.context.Context;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -36,18 +28,20 @@ public class OrderServiceImpl implements OrderService {
     private final OrderListMapper orderListMapper;
     private final UserRepository userRepository;
     private final MenuRepository menuRepository;
+    private final DetailsRepository detailsRepository;
     private final JavaMailSender javaMailSender;
     private final TemplateEngine templateEngine;
 
     @Autowired
     public OrderServiceImpl(MenuOrdersRepository menuOrdersRepository, OrderRepository orderRepository,
                             OrderListMapper orderListMapper, UserRepository userRepository, MenuRepository menuRepository,
-                            JavaMailSender javaMailSender, TemplateEngine templateEngine) {
+                            DetailsRepository detailsRepository, JavaMailSender javaMailSender, TemplateEngine templateEngine) {
         this.menuOrdersRepository = menuOrdersRepository;
         this.orderRepository = orderRepository;
         this.orderListMapper = orderListMapper;
         this.userRepository = userRepository;
         this.menuRepository = menuRepository;
+        this.detailsRepository = detailsRepository;
         this.javaMailSender = javaMailSender;
         this.templateEngine = templateEngine;
     }
@@ -75,7 +69,7 @@ public class OrderServiceImpl implements OrderService {
             if (quantity > 1) {
                 OrderItemDto orderItemDto = orderList.get(i);
                 orderItemDto.setQuantity(quantity);
-                orderItemDto.setPrice(quantity * orderItemDto.getPrice());  // sumowanie cen
+                orderItemDto.setPrice(Float.valueOf(Math.round(quantity * orderItemDto.getPrice()) / 100));  // sumowanie cen
                 orderList.set(i, orderItemDto);
             }
         }
@@ -88,7 +82,10 @@ public class OrderServiceImpl implements OrderService {
             }
         }
 
-        return filteredOrderList;
+        return filteredOrderList
+                .stream()
+                .sorted(Comparator.comparing(OrderItemDto::getItemName))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -101,6 +98,7 @@ public class OrderServiceImpl implements OrderService {
         else {
             Order emptyOrder = new Order();
 
+            emptyOrder.setDate(null);
             emptyOrder.setPurchaser(user);
             emptyOrder.setStatus(Status.SELECTION);
 
@@ -121,7 +119,9 @@ public class OrderServiceImpl implements OrderService {
 
         order.setMenuOrders(menuOrdersList);
         orderRepository.save(order);
-
+        Details detailMenu = detailsRepository.findById(menuId).orElse(null);
+        Objects.requireNonNull(detailMenu).setOrdersNumber(detailMenu.getOrdersNumber() + 1);
+        detailsRepository.save(detailMenu);
     }
 
     @Override
@@ -135,6 +135,10 @@ public class OrderServiceImpl implements OrderService {
         Long id = menuOrdersList.get(0).getId();
 
         menuOrdersRepository.deleteByIdAndMenuItemAndOrderItem(id, selectedMenuItem, order);
+
+        Details detailMenu = detailsRepository.findById(menuId).orElse(null);
+        Objects.requireNonNull(detailMenu).setOrdersNumber(detailMenu.getOrdersNumber() - 1);
+        detailsRepository.save(detailMenu);
     }
 
     @Override
@@ -169,12 +173,15 @@ public class OrderServiceImpl implements OrderService {
                 menuList.add(menuItem);
             }
 
-            Float totalPrice = 0F;
+            Float totalPrice = Float.valueOf(0);
             for (Menu menu : menuList) {
                totalPrice += menu.getPrice();
             }
 
+            System.out.println(totalPrice);
             order.setTotalPrice(totalPrice);
+
+            orderRepository.save(order);
 
             // wysłanie emaila
             Context context = new Context();
@@ -199,6 +206,18 @@ public class OrderServiceImpl implements OrderService {
             }
             javaMailSender.send(mail);
         }
+    }
+
+    @Override
+    public List<Order> getAllOrderForUser(Long userId) {
+        User user = userRepository.findById(userId).orElse(null);
+        List<Order> orders =  orderRepository.findAllByPurchaserOrderByDate(user);
+        List<Order> ordersHistory = orders
+                .stream()
+                .filter(o -> o.getStatus() == Status.ACCEPTED)
+                .collect(Collectors.toList());
+
+        return ordersHistory;
     }
 
 

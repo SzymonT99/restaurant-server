@@ -71,10 +71,14 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     // Autentykacja obecnego użytkownika
                     SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
                 }
+                else {
+                    logger.warn("The token is invalid");
+                }
             } catch (UsernameNotFoundException unf) {
                 logger.warn("There is no user with the given login");
             }
         }
+
         chain.doFilter(request, response);
     }
 

@@ -3,7 +3,6 @@ package com.restaurant.springboot.controller;
 import com.restaurant.springboot.config.JwtTokenUtil;
 import com.restaurant.springboot.domain.dto.*;
 import com.restaurant.springboot.domain.entity.User;
-import com.restaurant.springboot.domain.model.AuthorizationStatus;
 import com.restaurant.springboot.service.UserService;
 import com.restaurant.springboot.service.impl.JwtUserDetailsService;
 import org.slf4j.Logger;
@@ -59,12 +58,12 @@ public class UserApiController {
     public ResponseEntity<?> authorizeUser(@RequestBody UserAuthorizationDto userVerificationDto) throws Exception {
 
         LOGGER.info("--- check login data: {}", userVerificationDto.getLogin());
-        LOGGER.info("--- check password data: {}", userVerificationDto.getPassword());
 
-        AuthorizationStatus status = userService.checkLogin(userVerificationDto);
-        LOGGER.info("--- login status: {}", status);
+        Message message = userService.checkLogin(userVerificationDto);
+        String codeName = message.getCodeName();
+        LOGGER.info("--- login status: {}", codeName);
 
-        if (status == AuthorizationStatus.ACCESS) {
+        if (codeName.equals("ACCESS")) {
 
             Long userId = userService.getUserIdByLogin(userVerificationDto.getLogin());
             final UserDetails userDetails = userDetailsService.loadUserByUsername(userVerificationDto.getLogin());
@@ -73,10 +72,12 @@ public class UserApiController {
 
             return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
 
-        } else if (status == AuthorizationStatus.UNAUTHORIZED) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } else if (codeName.equals("UNAUTHORIZED")) {
+            return new ResponseEntity<>(message, HttpStatus.UNAUTHORIZED);
+        } else if (codeName.equals("NOT_FOUND")) {
+            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
         } else {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(message, HttpStatus.FORBIDDEN);
         }
     }
 
