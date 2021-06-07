@@ -69,7 +69,7 @@ public class OrderServiceImpl implements OrderService {
             if (quantity > 1) {
                 OrderItemDto orderItemDto = orderList.get(i);
                 orderItemDto.setQuantity(quantity);
-                orderItemDto.setPrice(Float.valueOf(Math.round(quantity * orderItemDto.getPrice()) / 100));  // sumowanie cen
+                orderItemDto.setPrice(Float.valueOf(Math.round(quantity * orderItemDto.getPrice() * 100) / 100));  // sumowanie cen
                 orderList.set(i, orderItemDto);
             }
         }
@@ -173,7 +173,7 @@ public class OrderServiceImpl implements OrderService {
                 menuList.add(menuItem);
             }
 
-            Float totalPrice = Float.valueOf(0);
+            Float totalPrice = 0F;
             for (Menu menu : menuList) {
                totalPrice += menu.getPrice();
             }
