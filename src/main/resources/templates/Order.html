@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Potwierdzenie zamówienia</title>
+    <style>
+        body {
+            margin: 0px;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            margin: 0px;
+            padding: 120px 250px;
+            background-image: url("https://images.pexels.com/photos/958545/pexels-photo-958545.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260");
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+            background-color: rgba(0,0,0,0.7);
+            background-blend-mode: color;
+        }
+        .content {
+            background-color: white;
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+            -webkit-box-shadow: 0px 0px 17px 10px rgba(0,0,0,0.68);
+            box-shadow: 0px 0px 17px 10px rgba(0,0,0,0.68);
+        }
+        .heading {
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .title {
+            margin: 0px 0px 10px 0px;
+
+        }
+        .order-content {
+            padding-left: 5%;
+            padding-right: 5%;
+        }
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        td {
+            border-bottom-width: 1px;
+            border-bottom-style: solid;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #ff8c29;
+            text-align: left;
+            padding: 8px;
+            border-width: 1px;
+            border-style: solid;
+            border-color: black;
+        }
+        #payment {
+            background-color: #e2e2e2;
+            margin: 0px 0px 10px 0px;
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="content">
+        <h2 class="heading">Zamówienie potwierdzone</h2>
+        <hr style="width: 90%; border-color: #ff8c29; margin-bottom: 20px;">
+        <div class="order-content">
+            <p class="title">Lista zamówienia</p>
+            <table>
+                <tr>
+                    <th>Nazwa</th>
+                    <th>Cena</th>
+                    <th>Ilość</th>
+                </tr>
+                <tr th:each="item : ${orderList}">
+                    <td><span th:text="${item.itemName}">NAME</span></td>
+                    <td><span th:text="${item.price + ' zł'}">PRICE</span></td>
+                    <td><span th:text="${item.quantity + ' szt.'}">QUANTITY</span></td>
+                </tr>
+            </table>
+            <p class="title">Całkowita cena zamówienia</p>
+            <h3 style="margin: 0px 0px 10px 0px" th:text="${totalPrice}">TOTAL_PRICE</h3>
+            <p class="title">Metoda płatności</p>
+            <h3 id="payment" th:text="${payment}">PAYMENT</h3>
+            <p class="title">Podany adres</p>
+            <div style="display: flex; margin: 0px">
+                <h3 style="margin: 0px 0px 15px 0px" th:text="${town}">TOWN</h3>
+                <h3 style="margin: 0px 0px 15px 10px" th:text="${street}">STREET</h3>
+                <h3 style="margin: 0px 0px 15px 10px" th:text="${postalCode}">POSTAL_CODE</h3>
+            </div>
+        </div>
+        <hr style="width: 90%; border-color: #ff8c29;">
+        <p style="text-align: center">
+            Dziękujemy za złożenie zamówienia.
+            <br>
+            Przypominamy, że stan zamówienia można śledzić w naszej aplikacji mobilnej.
+        </p>
+    </div>
+</div>
+</body>
+</html>
