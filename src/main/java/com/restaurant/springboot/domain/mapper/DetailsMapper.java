@@ -22,7 +22,6 @@ public class DetailsMapper {
         detailsDto.setCategoryName(menuItem.getCategory().getCategoryName());
         detailsDto.setDetails(menuItem.getDetails());
 
-
         return detailsDto;
     }
 

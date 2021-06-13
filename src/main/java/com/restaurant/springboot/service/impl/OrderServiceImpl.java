@@ -69,7 +69,7 @@ public class OrderServiceImpl implements OrderService {
             if (quantity > 1) {
                 OrderItemDto orderItemDto = orderList.get(i);
                 orderItemDto.setQuantity(quantity);
-                orderItemDto.setPrice(Float.valueOf(Math.round(quantity * orderItemDto.getPrice() * 100) / 100));  // sumowanie cen
+                orderItemDto.setPrice(orderItemDto.getPrice());  // sumowanie cen
                 orderList.set(i, orderItemDto);
             }
         }
