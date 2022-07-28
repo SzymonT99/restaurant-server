@@ -26,5 +26,4 @@ To run the server you must:
 ## Database
 The MySQL relational database was used.<br />
 - ERD diagram
-  
-  
+  ![ERD](https://user-images.githubusercontent.com/72529852/181506501-98dc5582-13ea-4722-ad53-a5b718dfa0d6.png)
